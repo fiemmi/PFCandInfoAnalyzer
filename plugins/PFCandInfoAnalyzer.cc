@@ -1,4 +1,3 @@
-
 // Package:    PFCandInfo/PFCandInfoAnalyzer
 // Class:      PFCandInfoAnalyzer
 // 
@@ -10,7 +9,7 @@
      [Notes on implementation]
 */
 //
-// Original Author:  Fabio Iemmi
+// Original Author:  Fabio Iemmi - University and INFN of Bologna
 //         Created:  Fri, 20 Mar 2020 17:44:41 GMT
 //
 //
@@ -40,6 +39,13 @@
 #include "DataFormats/PatCandidates/interface/PFParticle.h"
 #include "DataFormats/Candidate/interface/Candidate.h"
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
+#include "DataFormats/PatCandidates/interface/Muon.h"
+#include "DataFormats/MuonReco/interface/MuonSelectors.h"
+#include "DataFormats/PatCandidates/interface/Electron.h"
+#include "DataFormats/PatCandidates/interface/MET.h"
+
+#include "DataFormats/Common/interface/TriggerResults.h"
+#include "FWCore/Common/interface/TriggerNames.h"
 
 //ROOT includes
 #include "TH1.h"
@@ -76,17 +82,27 @@ class PFCandInfoAnalyzer : public edm::EDAnalyzer {
   int nAK4PUPPIJets = 0;
   int nAK4CHSJets = 0;
   int nAK4GenJets = 0;
+  int nLeptons;
   int nPFCand;
   int run, evt, lumi;
-  std::vector <float> PFCandPt,PFCandPx, PFCandPy, PFCandPz, PFCandEta, PFCandAbsEta, PFCandPhi, PFCandE, PFCandpdgId, PFCandCharge, PFCandPUPPIw, PFCandHCalFrac, PFCandHCalFracCalib, PFCandVtxAssQual, PFCandFromPV, PFCandLostInnerHits, PFCandTrackHighPurity, PFCandDZ, PFCandDXY, PFCandDZSig, PFCandDXYSig, PFCandNormChi2, PFCandQuality, AK4PUPPIJetPt,  AK4PUPPIJetEta, AK4PUPPIJetPhi, AK4PUPPIJetE, AK4PUPPIJetRawPt, AK4PUPPIJetRawE, AK4CHSJetPt, AK4CHSJetEta, AK4CHSJetPhi, AK4CHSJetE, AK4CHSJetRawPt, AK4CHSJetRawE, AK4GenJetPt, AK4GenJetEta, AK4GenJetPhi;
+  float CHSMET, RawCHSMET, PUPPIMET, RawPUPPIMET;
+  std::vector <float> PFCandPt,PFCandPx, PFCandPy, PFCandPz, PFCandEta, PFCandAbsEta, PFCandPhi, PFCandE, PFCandpdgId, PFCandCharge, PFCandPUPPIw, PFCandHCalFrac, PFCandHCalFracCalib, PFCandVtxAssQual, PFCandFromPV, PFCandLostInnerHits, PFCandTrackHighPurity, PFCandDZ, PFCandDXY, PFCandDZSig, PFCandDXYSig, PFCandNormChi2, PFCandQuality, PFCandNumHits, PFCandNumPixelHits, PFCandPixelLayersWithMeasurement, PFCandStripLayersWithMeasurement, PFCandTrackerLayersWithMeasurement, AK4PUPPIJetPt,  AK4PUPPIJetEta, AK4PUPPIJetPhi, AK4PUPPIJetE, AK4PUPPIJetRawPt, AK4PUPPIJetRawE, AK4CHSJetPt, AK4CHSJetEta, AK4CHSJetPhi, AK4CHSJetE, AK4CHSJetRawPt, AK4CHSJetRawE, AK4GenJetPt, AK4GenJetEta, AK4GenJetPhi;
+  std::vector<std::string> triggerNames_;
+  TH1F* triggerNamesHisto_;
+  std::vector<bool> triggerBit_;
   edm::Service<TFileService> fs_;
+  edm::EDGetTokenT<edm::TriggerResults> triggerResultsToken_;
   edm::EDGetTokenT<reco::VertexCollection> vtxToken_;
   edm::EDGetTokenT<std::vector<PileupSummaryInfo> > PUToken_;
   edm::EDGetTokenT<pat::JetCollection> PUPPIjetToken_;
   edm::EDGetTokenT<pat::JetCollection> CHSjetToken_;
   edm::EDGetTokenT<reco::GenJetCollection> GenjetToken_;
   edm::EDGetTokenT<pat::PackedCandidateCollection> pfcandToken_;
-  
+  edm::EDGetTokenT<pat::ElectronCollection> electronToken_;
+  edm::EDGetTokenT<pat::MuonCollection> muonToken_;
+  edm::EDGetTokenT<pat::METCollection> METToken_;
+  edm::EDGetTokenT<pat::METCollection> PUPPIMETToken_;
+
 };
 
 //
@@ -101,27 +117,44 @@ class PFCandInfoAnalyzer : public edm::EDAnalyzer {
 // constructors and destructor
 //
 PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
+  triggerResultsToken_(consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("triggerResults"))),
   vtxToken_(consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"))),
   PUToken_(consumes<std::vector<PileupSummaryInfo> >(iConfig.getParameter<edm::InputTag>("PUinfo"))),
   PUPPIjetToken_(consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("AK4PUPPIJets"))),
   CHSjetToken_(consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("AK4CHSJets"))),
   GenjetToken_(consumes<reco::GenJetCollection>(iConfig.getParameter<edm::InputTag>("AK4GenJets"))),
-  pfcandToken_(consumes<pat::PackedCandidateCollection>(iConfig.getParameter<edm::InputTag>("PFCands")))
+  pfcandToken_(consumes<pat::PackedCandidateCollection>(iConfig.getParameter<edm::InputTag>("PFCands"))),
+  electronToken_(consumes<pat::ElectronCollection>(iConfig.getParameter<edm::InputTag>("electrons"))),
+  muonToken_(consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"))),
+  METToken_(consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("missingEt"))),
+  PUPPIMETToken_(consumes<pat::METCollection>(iConfig.getParameter<edm::InputTag>("PUPPImissingEt")))
   
 {
   //now do what ever initialization is needed
+  triggerNames_ = iConfig.getParameter<std::vector<std::string> > ("triggerNames");
+
+  //--- booking the triggerNames histogram ---------                                                                                                            
+  triggerNamesHisto_ = new TH1F("TriggerNames","TriggerNames",1,0,1);
+  triggerNamesHisto_->SetCanExtend(TH1::kAllAxes);
+  for(unsigned i=0;i<triggerNames_.size();i++) {
+    triggerNamesHisto_->Fill(triggerNames_[i].c_str(),1);
+  }
+  
+
   outTree_ = new TTree ("events","events");
   outTree_->Branch("runNo",&run,"run/i");
   outTree_->Branch("evtNo",&evt,"evt/i");
   outTree_->Branch("lumiSec",&lumi,"lumi/i");
+  outTree_->Branch("triggerBit", &triggerBit_);
   outTree_->Branch("nVtx",&nvtx,"nvtx/i");
   outTree_->Branch("nPUint",&nPUint,"nPUint/i");
+  outTree_->Branch("nLeptons", &nLeptons,"nLeptons/i");
   outTree_->Branch("nAK4PUPPIJets", &nAK4PUPPIJets,"nAK4PUPPIJets/i");
   outTree_->Branch("nAK4CHSJets", &nAK4CHSJets,"nAK4CHSJets/i");
-  //outTree_->Branch("nAK4GenJets", &nAK4GenJets,"nAK4GenJets/i");
+  outTree_->Branch("nAK4GenJets", &nAK4GenJets,"nAK4GenJets/i");
   outTree_->Branch("nPFCands", &nPFCand,"nPFCand/i");
   outTree_->Branch("PFCandPt", &PFCandPt);
-  // outTree_->Branch("PFCandPx", &PFCandPx);
+  //outTree_->Branch("PFCandPx", &PFCandPx);
   //outTree_->Branch("PFCandPy", &PFCandPy);
   //outTree_->Branch("PFCandPz", &PFCandPz);
   outTree_->Branch("PFCandEta", &PFCandEta);
@@ -143,6 +176,11 @@ PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
   outTree_->Branch("PFCandDXYsig", &PFCandDXYSig);
   outTree_->Branch("PFCandNormChi2", &PFCandNormChi2);
   outTree_->Branch("PFCandQuality", &PFCandQuality);
+  //outTree_->Branch("PFCandNumPixelHits", &PFCandNumPixelHits);
+  outTree_->Branch("PFCandNumHits", &PFCandNumHits);
+  //outTree_->Branch("PFCandPixelLayersWithMeasurement", &PFCandPixelLayersWithMeasurement);
+  //outTree_->Branch("PFCandStripLayersWithMeasurement", &PFCandStripLayersWithMeasurement);
+  outTree_->Branch("PFCandNumLayersHit", &PFCandTrackerLayersWithMeasurement);
   outTree_->Branch("AK4PUPPIJetPt", &AK4PUPPIJetPt);
   outTree_->Branch("AK4PUPPIJetEta", &AK4PUPPIJetEta);
   outTree_->Branch("AK4PUPPIJetPhi", &AK4PUPPIJetPhi);
@@ -155,10 +193,16 @@ PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
   outTree_->Branch("AK4CHSJetE", &AK4CHSJetE);
   outTree_->Branch("AK4CHSJetRawPt", &AK4CHSJetRawPt);
   outTree_->Branch("AK4CHSJetRawE", &AK4CHSJetRawE);
-  /*outTree_->Branch("AK4GenJetPt", &AK4GenJetPt);
+  outTree_->Branch("AK4GenJetPt", &AK4GenJetPt);
   outTree_->Branch("AK4GenJetEta", &AK4GenJetEta);
-  outTree_->Branch("AK4GenJetPhi", &AK4GenJetPhi);*/
-  
+  outTree_->Branch("AK4GenJetPhi", &AK4GenJetPhi);
+  outTree_->Branch("CHSMET", &CHSMET);
+  outTree_->Branch("RawCHSMET", &RawCHSMET);
+  outTree_->Branch("PUPPIMET", &PUPPIMET);
+  outTree_->Branch("RawPUPPIMET", &RawPUPPIMET);
+
+  triggerNamesHisto_->Write();
+
 }
 
 
@@ -183,10 +227,10 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   using namespace edm;
 
   run    = iEvent.id().run();
-  //run    = iEvent.getRun();
   evt    = iEvent.id().event();
   lumi   = iEvent.id().luminosityBlock();
-  //lumi   = iEvent.getLuminosityBlock();
+
+   //-------------- Handle vertices info ----------------------------------------------------------------------------------------------------------------------
 
   Handle<reco::VertexCollection> vertices;
   iEvent.getByToken(vtxToken_, vertices);
@@ -196,6 +240,9 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   }
   nvtx = vertices->size();
 
+   //-------------- Handle pileup info ----------------------------------------------------------------------------------------------------------------------
+
+  /*        
   Handle <std::vector<PileupSummaryInfo> > PUinfo;
   iEvent.getByToken(PUToken_, PUinfo);
   if (PUinfo->empty()) {
@@ -216,7 +263,81 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
     }
 
   }
+  */
  
+   //-------------- Handle trigger info ----------------------------------------------------------------------------------------------------------------------
+ 
+  Handle<edm::TriggerResults> triggerResults;
+  iEvent.getByToken(triggerResultsToken_, triggerResults);
+  
+  const edm::TriggerNames &names = iEvent.triggerNames(*triggerResults);
+  
+  for(unsigned int k = 0; k < triggerNames_.size(); k++) {//loop over the list of trigger names...
+   
+    bool bit(false);
+    
+    for(unsigned int itrig = 0; itrig < triggerResults->size(); itrig++) {//loop over triggerResults to see what triggers the event passed
+      
+      string trigger_name = string(names.triggerName(itrig)); //get the name of the itrig-th trigger that has been passed
+      
+      //--- erase the last characters, i.e. the version number----
+      for (int a = 0; a < 2; a++) {
+
+	char last_char = trigger_name.back();
+	if ( isdigit( last_char ) ) trigger_name.pop_back();
+      
+      }
+
+      if (trigger_name == triggerNames_[k]) {//if the name is in the list of trigger names...
+	
+	bit = triggerResults->accept(itrig);//...bit becomes true
+     
+      }
+   
+    }
+
+    triggerBit_.push_back(bit);
+
+  }
+
+  //----------- Handle lepton info ----------------------------------------------------------------------------------------------------------------------------
+
+  Handle<pat::ElectronCollection> electrons;
+  iEvent.getByToken(electronToken_, electrons);
+
+  Handle<pat::MuonCollection> muons;
+  iEvent.getByToken(muonToken_, muons);
+
+  vector<const reco::Candidate *> myLeptons;
+  
+  for ( long unsigned int i = 0; i < muons->size(); i++ ) { //loop on muons imposing cuts to reject non-prompt muons: hadronic punch-throughs, in-flight decays from b/c-flavored hadrons
+    
+    if ( muons->at(i).passed(reco::Muon::PFIsoMedium) ) {//first start by reqiring an isolated muon
+      /*
+      if ( muons->at(i).isGlobalMuon() && //track identified as a global muon
+	   muons->at(i).globalTrack()->normalizedChi2() < 10.0 && //chi2/ndof of the global fit less than 10
+	   muons->at(i).globalTrack()->hitPattern().numberOfValidMuonHits() > 0 && //at least one hit in muon detector
+	   fabs(muons->at(i).globalTrack()->dxy(vertices->at(0).position())) < 0.002 && // transverse impact parameter less than 2mm
+ 	   muons->at(i).globalTrack()->numberOfValidHits() > 10 ) //more than ten valid hits on the track
+      */
+      myLeptons.push_back(&muons->at(i));
+    
+    }
+  
+  }
+  
+  for ( long unsigned int i = 0; i < electrons->size(); i++ ) {
+    
+    float eleRelIso = ( electrons->at(i).dr03TkSumPt() + max( 0., electrons->at(i).dr03EcalRecHitSumEt() -1.) + electrons->at(i).dr03HcalTowerSumEt() )/electrons->at(i).pt();
+    
+    if ( eleRelIso < 0.20) myLeptons.push_back(&electrons->at(i));
+  
+  }
+  
+  std::sort(myLeptons.begin(),myLeptons.end(),[](const reco::Candidate *a,const reco::Candidate *b){return a->pt() > b->pt();});
+  nLeptons = (int)myLeptons.size();
+
+   //-------------- Handle AK4 PUPPI jets info ----------------------------------------------------------------------------------------------------------------------
   
   Handle<pat::JetCollection> AK4PUPPIJets;
   iEvent.getByToken(PUPPIjetToken_, AK4PUPPIJets);
@@ -226,24 +347,30 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
     }*/
 
   //nAK4PUPPIJets = AK4PUPPIJets->size(); count only jets with pt > 20 and |eta| < 2.4
-  
+
+   //-------------- Handle AK4 CHS jets info ----------------------------------------------------------------------------------------------------------------------
+
   Handle<pat::JetCollection> AK4CHSJets;
   iEvent.getByToken(CHSjetToken_, AK4CHSJets);
   /*if(AK4CHSJets->empty()) {
     std::cout << "AK4CHSJets is empty!!! skipping event..." << endl;
     return;
   }
+  */
   //nAK4CHSJets = AK4CHSJets->size(); count only jets with pt > 20 and |eta| < 2.4
 
-  Handle<reco::GenJetCollection> AK4GenJets;
-  iEvent.getByToken(GenjetToken_, AK4GenJets);
-  if(AK4GenJets->empty()) {
+   //-------------- Handle AK4 gen jets info ----------------------------------------------------------------------------------------------------------------------
+
+  //Handle<reco::GenJetCollection> AK4GenJets;
+  //iEvent.getByToken(GenjetToken_, AK4GenJets);
+  /*if(AK4GenJets->empty()) {
     std::cout << "AK4GenJets is empty!!! skipping event..." << endl;
     return;
   }
+  */
   //nAK4GenJets = AK4GenJets->size(); count only jets with pt > 20 and |eta| < 2.4
   
-  */
+ //-------------- Handle particle-flow candidates info ----------------------------------------------------------------------------------------------------------------------
 
   Handle<pat::PackedCandidateCollection> PFCands;
   iEvent.getByToken(pfcandToken_, PFCands);
@@ -251,8 +378,9 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
     std::cout << "PFCands is empty!!! skipping event..." << endl;
     return;
   }
-  nPFCand = PFCands->size();
 
+  nPFCand = PFCands->size();
+  
   //loop on PF candidates to store their Pt, Eta, Phi, E, pdgId, charge, PUPPI weight
   for (int i = 0; i < nPFCand; i++) {
 
@@ -267,7 +395,11 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
     PFCandpdgId.push_back(PFCands->at(i).pdgId());
     PFCandCharge.push_back(PFCands->at(i).charge());
     PFCandPUPPIw.push_back(PFCands->at(i).puppiWeight());
-
+    PFCandNumHits.push_back(PFCands->at(i).numberOfHits());
+    PFCandNumPixelHits.push_back(PFCands->at(i).numberOfPixelHits());
+    PFCandPixelLayersWithMeasurement.push_back(PFCands->at(i).pixelLayersWithMeasurement());
+    PFCandStripLayersWithMeasurement.push_back(PFCands->at(i).stripLayersWithMeasurement());
+    PFCandTrackerLayersWithMeasurement.push_back(PFCands->at(i).trackerLayersWithMeasurement());
     //for neutral hadrons or HF hadron, store fraction of energy recorded in the HCAL
     if (PFCands->at(i).pdgId() == 130 || PFCands->at(i).pdgId() == 1) {
       
@@ -333,6 +465,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
     }
 
   }
+
    
   //loop on CHS jets to store their Pt, Eta, Phi
   for (long unsigned int i = 0; i < AK4CHSJets->size(); i++) {
@@ -351,9 +484,9 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
    
   }
 
-  /*
+  /*      
   //loop on Gen jets to store their Pt, Eta, Phi
-  for (long unsigned int i = 0; i < AK4GenJets->size(); i++) {
+   for (long unsigned int i = 0; i < AK4GenJets->size(); i++) {
 
     if ( AK4GenJets->at(i).pt() > 20 && fabs(AK4GenJets->at(i).eta()) < 2.4 ) {
 
@@ -365,14 +498,26 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
     }
    
   }
-  
   */
+  
+  Handle<pat::METCollection> MET;
+  iEvent.getByToken(METToken_, MET);
+  CHSMET = MET->at(0).pt();
+  RawCHSMET = MET->at(0).uncorPt();
+
+  Handle<pat::METCollection> PuppiMET;
+  iEvent.getByToken(PUPPIMETToken_, PuppiMET);
+  PUPPIMET = PuppiMET->at(0).pt();
+  RawPUPPIMET = PuppiMET->at(0).uncorPt();
+  
 
   outTree_->Fill();
  
   nAK4PUPPIJets = 0;
   nAK4CHSJets = 0;
   nAK4GenJets = 0;
+  triggerBit_.clear();
+  myLeptons.clear();
   PFCandPt.clear();
   PFCandPx.clear();
   PFCandPy.clear();
@@ -396,6 +541,11 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   PFCandDXYSig.clear();
   PFCandNormChi2.clear();
   PFCandQuality.clear();
+  PFCandNumHits.clear();
+  PFCandNumPixelHits.clear();
+  PFCandPixelLayersWithMeasurement.clear();
+  PFCandStripLayersWithMeasurement.clear();
+  PFCandTrackerLayersWithMeasurement.clear();
   AK4PUPPIJetPt.clear();
   AK4PUPPIJetEta.clear();
   AK4PUPPIJetPhi.clear();
@@ -413,16 +563,6 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   AK4GenJetPhi.clear();
 
   
-
-
-
-
-
-
-
-
-
-
 
 
 #ifdef THIS_IS_AN_EVENT_EXAMPLE

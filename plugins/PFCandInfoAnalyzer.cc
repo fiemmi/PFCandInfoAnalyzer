@@ -29,6 +29,9 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 
+#include "DataFormats/Common/interface/TriggerResults.h"
+#include "FWCore/Common/interface/TriggerNames.h"
+
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 
@@ -39,13 +42,12 @@
 #include "DataFormats/PatCandidates/interface/PFParticle.h"
 #include "DataFormats/Candidate/interface/Candidate.h"
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
+
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/MuonReco/interface/MuonSelectors.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
-#include "DataFormats/PatCandidates/interface/MET.h"
 
-#include "DataFormats/Common/interface/TriggerResults.h"
-#include "FWCore/Common/interface/TriggerNames.h"
+#include "DataFormats/PatCandidates/interface/MET.h"
 
 //ROOT includes
 #include "TH1.h"
@@ -86,10 +88,16 @@ class PFCandInfoAnalyzer : public edm::EDAnalyzer {
   int nPFCand;
   int run, evt, lumi;
   float CHSMET, RawCHSMET, PUPPIMET, RawPUPPIMET;
-  std::vector <float> PFCandPt,PFCandPx, PFCandPy, PFCandPz, PFCandEta, PFCandAbsEta, PFCandPhi, PFCandE, PFCandpdgId, PFCandCharge, PFCandPUPPIw, PFCandHCalFrac, PFCandHCalFracCalib, PFCandVtxAssQual, PFCandFromPV, PFCandLostInnerHits, PFCandTrackHighPurity, PFCandDZ, PFCandDXY, PFCandDZSig, PFCandDXYSig, PFCandNormChi2, PFCandQuality, PFCandNumHits, PFCandNumPixelHits, PFCandPixelLayersWithMeasurement, PFCandStripLayersWithMeasurement, PFCandTrackerLayersWithMeasurement, AK4PUPPIJetPt,  AK4PUPPIJetEta, AK4PUPPIJetPhi, AK4PUPPIJetE, AK4PUPPIJetRawPt, AK4PUPPIJetRawE, AK4CHSJetPt, AK4CHSJetEta, AK4CHSJetPhi, AK4CHSJetE, AK4CHSJetRawPt, AK4CHSJetRawE, AK4GenJetPt, AK4GenJetEta, AK4GenJetPhi;
+  std::vector <float> PFCandPt,PFCandPx, PFCandPy, PFCandPz, PFCandEta, PFCandAbsEta, PFCandPhi, PFCandE, PFCandpdgId, PFCandCharge, PFCandPUPPIw, PFCandHCalFrac,
+  PFCandHCalFracCalib, PFCandVtxAssQual, PFCandFromPV, PFCandLostInnerHits, PFCandTrackHighPurity, PFCandDZ, PFCandDXY, PFCandDZSig, PFCandDXYSig, PFCandNormChi2,
+  PFCandQuality, PFCandNumHits, PFCandNumPixelHits, PFCandPixelLayersWithMeasurement, PFCandStripLayersWithMeasurement, PFCandTrackerLayersWithMeasurement, AK4PUPPIJetPt,
+  AK4PUPPIJetEta, AK4PUPPIJetPhi, AK4PUPPIJetE, AK4PUPPIJetRawPt, AK4PUPPIJetRawE, AK4CHSJetPt, AK4CHSJetEta, AK4CHSJetPhi, AK4CHSJetE, AK4CHSJetRawPt, AK4CHSJetRawE, 
+  AK4GenJetPt, AK4GenJetEta, AK4GenJetPhi;
+  
   std::vector<std::string> triggerNames_;
   TH1F* triggerNamesHisto_;
   std::vector<bool> triggerBit_;
+  
   edm::Service<TFileService> fs_;
   edm::EDGetTokenT<edm::TriggerResults> triggerResultsToken_;
   edm::EDGetTokenT<reco::VertexCollection> vtxToken_;
@@ -136,8 +144,11 @@ PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
   //--- booking the triggerNames histogram ---------                                                                                                            
   triggerNamesHisto_ = new TH1F("TriggerNames","TriggerNames",1,0,1);
   triggerNamesHisto_->SetCanExtend(TH1::kAllAxes);
-  for(unsigned i=0;i<triggerNames_.size();i++) {
-    triggerNamesHisto_->Fill(triggerNames_[i].c_str(),1);
+  
+  for(unsigned i = 0; i < triggerNames_.size(); i++) {
+
+    triggerNamesHisto_->Fill(triggerNames_[i].c_str(), 1);
+  
   }
   
 
@@ -230,14 +241,18 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   evt    = iEvent.id().event();
   lumi   = iEvent.id().luminosityBlock();
 
-   //-------------- Handle vertices info ----------------------------------------------------------------------------------------------------------------------
+  //-------------- Handle vertices info ----------------------------------------------------------------------------------------------------------------------
 
   Handle<reco::VertexCollection> vertices;
   iEvent.getByToken(vtxToken_, vertices);
+  
   if (vertices->empty()) {
+
     std::cout << "vertices is empty!!! skipping event..." << endl;
     return;
+  
   }
+  
   nvtx = vertices->size();
 
    //-------------- Handle pileup info ----------------------------------------------------------------------------------------------------------------------
@@ -245,10 +260,13 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   /*        
   Handle <std::vector<PileupSummaryInfo> > PUinfo;
   iEvent.getByToken(PUToken_, PUinfo);
+  
   if (PUinfo->empty()) {
+  
     std::cout << "PUinfo is empty!!! skipping event..." << endl;
     return;
-  }
+  
+    }
 
   std::vector<PileupSummaryInfo>::const_iterator PVI;
 
@@ -265,7 +283,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   }
   */
  
-   //-------------- Handle trigger info ----------------------------------------------------------------------------------------------------------------------
+  //-------------- Handle trigger info ----------------------------------------------------------------------------------------------------------------------
  
   Handle<edm::TriggerResults> triggerResults;
   iEvent.getByToken(triggerResultsToken_, triggerResults);
@@ -312,8 +330,10 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   
   for ( long unsigned int i = 0; i < muons->size(); i++ ) { //loop on muons imposing cuts to reject non-prompt muons: hadronic punch-throughs, in-flight decays from b/c-flavored hadrons
     
-    if ( muons->at(i).passed(reco::Muon::PFIsoMedium) ) {//first start by reqiring an isolated muon
+    if ( muons->at(i).passed(reco::Muon::PFIsoMedium) ) {//requre  an isolated muon
       /*
+	+++ NOTE: SKIP THE QUALITY REQUIREMENTS FOR MUONS: WANT THE NON-PROMPT LEPTONS TO BE IN THE COUNT TO VETO THEM +++
+
       if ( muons->at(i).isGlobalMuon() && //track identified as a global muon
 	   muons->at(i).globalTrack()->normalizedChi2() < 10.0 && //chi2/ndof of the global fit less than 10
 	   muons->at(i).globalTrack()->hitPattern().numberOfValidMuonHits() > 0 && //at least one hit in muon detector
@@ -335,15 +355,19 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   }
   
   std::sort(myLeptons.begin(),myLeptons.end(),[](const reco::Candidate *a,const reco::Candidate *b){return a->pt() > b->pt();});
+  
   nLeptons = (int)myLeptons.size();
 
    //-------------- Handle AK4 PUPPI jets info ----------------------------------------------------------------------------------------------------------------------
   
   Handle<pat::JetCollection> AK4PUPPIJets;
   iEvent.getByToken(PUPPIjetToken_, AK4PUPPIJets);
+  
   /*if(AK4PUPPIJets->empty()) {
+    
     std::cout << "AK4PUPPIJets is empty!!! skipping event..." << endl;
     return;
+    
     }*/
 
   //nAK4PUPPIJets = AK4PUPPIJets->size(); count only jets with pt > 20 and |eta| < 2.4
@@ -352,10 +376,13 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 
   Handle<pat::JetCollection> AK4CHSJets;
   iEvent.getByToken(CHSjetToken_, AK4CHSJets);
+  
   /*if(AK4CHSJets->empty()) {
+    
     std::cout << "AK4CHSJets is empty!!! skipping event..." << endl;
     return;
-  }
+  
+    }
   */
   //nAK4CHSJets = AK4CHSJets->size(); count only jets with pt > 20 and |eta| < 2.4
 
@@ -363,10 +390,13 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 
   //Handle<reco::GenJetCollection> AK4GenJets;
   //iEvent.getByToken(GenjetToken_, AK4GenJets);
+  
   /*if(AK4GenJets->empty()) {
+    
     std::cout << "AK4GenJets is empty!!! skipping event..." << endl;
     return;
-  }
+  
+    }
   */
   //nAK4GenJets = AK4GenJets->size(); count only jets with pt > 20 and |eta| < 2.4
   
@@ -374,9 +404,12 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 
   Handle<pat::PackedCandidateCollection> PFCands;
   iEvent.getByToken(pfcandToken_, PFCands);
+  
   if(PFCands->empty()) {
+    
     std::cout << "PFCands is empty!!! skipping event..." << endl;
     return;
+  
   }
 
   nPFCand = PFCands->size();
@@ -400,6 +433,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
     PFCandPixelLayersWithMeasurement.push_back(PFCands->at(i).pixelLayersWithMeasurement());
     PFCandStripLayersWithMeasurement.push_back(PFCands->at(i).stripLayersWithMeasurement());
     PFCandTrackerLayersWithMeasurement.push_back(PFCands->at(i).trackerLayersWithMeasurement());
+   
     //for neutral hadrons or HF hadron, store fraction of energy recorded in the HCAL
     if (PFCands->at(i).pdgId() == 130 || PFCands->at(i).pdgId() == 1) {
       
@@ -430,6 +464,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
     
       PFCandDZSig.push_back(PFCands->at(i).dz()/PFCands->at(i).dzError());
       PFCandDXYSig.push_back(PFCands->at(i).dxy()/PFCands->at(i).dxyError());
+      
       const auto *trk = PFCands->at(i).bestTrack();
       PFCandNormChi2.push_back(trk->normalizedChi2());
       PFCandQuality.push_back(trk->qualityMask());
@@ -502,11 +537,13 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   
   Handle<pat::METCollection> MET;
   iEvent.getByToken(METToken_, MET);
+  
   CHSMET = MET->at(0).pt();
   RawCHSMET = MET->at(0).uncorPt();
 
   Handle<pat::METCollection> PuppiMET;
   iEvent.getByToken(PUPPIMETToken_, PuppiMET);
+  
   PUPPIMET = PuppiMET->at(0).pt();
   RawPUPPIMET = PuppiMET->at(0).uncorPt();
   

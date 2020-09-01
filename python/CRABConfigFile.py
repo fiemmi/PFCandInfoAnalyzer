@@ -2,7 +2,7 @@ from CRABClient.UserUtilities import config
 
 config = config()
 config.General.requestName = 'JetHT_Run2017B-09Aug2019_UL2017-v1'
-config.General.workArea = 'crab_Aug22_2020_h2010'
+config.General.workArea = 'crab_Sep01_2020_h1830'
 config.General.transferOutputs = True
 config.General.transferLogs = False
 config.JobType.pluginName = 'Analysis'

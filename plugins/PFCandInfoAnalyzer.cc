@@ -81,10 +81,9 @@ class PFCandInfoAnalyzer : public edm::EDAnalyzer {
   TTree *outTree_;
   int nvtx;
   int nPUint;
-  int nAK4PUPPIJets = 0;
-  int nAK4PUPPIv15Jets = 0;
-  int nAK4CHSJets = 0;
-  int nAK4GenJets = 0;
+  int nAK4PUPPIJets;
+  int nAK4CHSJets;
+  int nAK4GenJets;
   int nLeptons;
   int nPFCand;
   int run, evt, lumi;
@@ -92,7 +91,7 @@ class PFCandInfoAnalyzer : public edm::EDAnalyzer {
   std::vector <float> PFCandPt,PFCandPx, PFCandPy, PFCandPz, PFCandEta, PFCandAbsEta, PFCandPhi, PFCandE, PFCandpdgId, PFCandCharge, PFCandPUPPIw, PFCandHCalFrac,
   PFCandHCalFracCalib, PFCandVtxAssQual, PFCandFromPV, PFCandLostInnerHits, PFCandTrackHighPurity, PFCandDZ, PFCandDXY, PFCandDZSig, PFCandDXYSig, PFCandNormChi2,
   PFCandQuality, PFCandNumHits, PFCandNumPixelHits, PFCandPixelLayersWithMeasurement, PFCandStripLayersWithMeasurement, PFCandTrackerLayersWithMeasurement, AK4PUPPIJetPt,
-  AK4PUPPIJetEta, AK4PUPPIJetPhi, AK4PUPPIJetE, AK4PUPPIJetRawPt, AK4PUPPIJetRawE, AK4PUPPIv15JetPt, AK4PUPPIv15JetEta, AK4PUPPIv15JetPhi, AK4PUPPIv15JetE, AK4PUPPIv15JetRawPt, AK4PUPPIv15JetRawE, AK4CHSJetPt, AK4CHSJetEta, AK4CHSJetPhi, AK4CHSJetE, AK4CHSJetRawPt, AK4CHSJetRawE, AK4GenJetPt, AK4GenJetEta, AK4GenJetPhi;
+  AK4PUPPIJetEta, AK4PUPPIJetPhi, AK4PUPPIJetE, AK4PUPPIJetRawPt, AK4PUPPIJetRawE, AK4CHSJetPt, AK4CHSJetEta, AK4CHSJetPhi, AK4CHSJetE, AK4CHSJetRawPt, AK4CHSJetRawE, AK4GenJetPt, AK4GenJetEta, AK4GenJetPhi;
   
   std::vector<std::string> triggerNames_;
   TH1F* triggerNamesHisto_;
@@ -105,7 +104,6 @@ class PFCandInfoAnalyzer : public edm::EDAnalyzer {
   edm::EDGetTokenT<reco::VertexCollection> vtxToken_;
   edm::EDGetTokenT<std::vector<PileupSummaryInfo> > PUToken_;
   edm::EDGetTokenT<pat::JetCollection> PUPPIjetToken_;
-  edm::EDGetTokenT<pat::JetCollection> PUPPIv15jetToken_;
   edm::EDGetTokenT<pat::JetCollection> CHSjetToken_;
   edm::EDGetTokenT<reco::GenJetCollection> GenjetToken_;
   edm::EDGetTokenT<pat::PackedCandidateCollection> pfcandToken_;
@@ -132,7 +130,6 @@ PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
   vtxToken_(consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"))),
   PUToken_(consumes<std::vector<PileupSummaryInfo> >(iConfig.getParameter<edm::InputTag>("PUinfo"))),
   PUPPIjetToken_(consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("AK4PUPPIJets"))),
-  PUPPIv15jetToken_(consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("AK4PUPPIv15Jets"))),
   CHSjetToken_(consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("AK4CHSJets"))),
   GenjetToken_(consumes<reco::GenJetCollection>(iConfig.getParameter<edm::InputTag>("AK4GenJets"))),
   pfcandToken_(consumes<pat::PackedCandidateCollection>(iConfig.getParameter<edm::InputTag>("PFCands"))),
@@ -168,7 +165,6 @@ PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
   outTree_->Branch("nPUint",&nPUint,"nPUint/i");
   outTree_->Branch("nLeptons", &nLeptons,"nLeptons/i");
   outTree_->Branch("nAK4PUPPIJets", &nAK4PUPPIJets,"nAK4PUPPIJets/i");
-  outTree_->Branch("nAK4PUPPIv15Jets", &nAK4PUPPIv15Jets,"nAK4PUPPIv15Jets/i");
   outTree_->Branch("nAK4CHSJets", &nAK4CHSJets,"nAK4CHSJets/i");
   outTree_->Branch("nAK4GenJets", &nAK4GenJets,"nAK4GenJets/i");
   outTree_->Branch("nPFCands", &nPFCand,"nPFCand/i");
@@ -206,12 +202,6 @@ PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
   outTree_->Branch("AK4PUPPIJetE", &AK4PUPPIJetE);
   outTree_->Branch("AK4PUPPIJetRawPt", &AK4PUPPIJetRawPt);
   outTree_->Branch("AK4PUPPIJetRawE", &AK4PUPPIJetRawE);
-  outTree_->Branch("AK4PUPPIv15JetPt", &AK4PUPPIv15JetPt);
-  outTree_->Branch("AK4PUPPIv15JetEta", &AK4PUPPIv15JetEta);
-  outTree_->Branch("AK4PUPPIv15JetPhi", &AK4PUPPIv15JetPhi);
-  outTree_->Branch("AK4PUPPIv15JetE", &AK4PUPPIv15JetE);
-  outTree_->Branch("AK4PUPPIv15JetRawPt", &AK4PUPPIv15JetRawPt);
-  outTree_->Branch("AK4PUPPIv15JetRawE", &AK4PUPPIv15JetRawE);
   outTree_->Branch("AK4CHSJetPt", &AK4CHSJetPt);
   outTree_->Branch("AK4CHSJetEta", &AK4CHSJetEta);
   outTree_->Branch("AK4CHSJetPhi", &AK4CHSJetPhi);
@@ -269,7 +259,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   
   nvtx = vertices->size();
 
-   //-------------- Handle pileup info ----------------------------------------------------------------------------------------------------------------------
+   //-------------- If Monte Carlo, handle pileup info ----------------------------------------------------------------------------------------------------------------------
 
   if (isMC) {
         
@@ -314,7 +304,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       
       string trigger_name = string(names.triggerName(itrig)); //get the name of the itrig-th trigger that has been passed
       
-      //--- erase the last characters, i.e. the version number----
+      //--- erase the last characters, i.e. the version number---
       for (int a = 0; a < 2; a++) {
 
 	char last_char = trigger_name.back();
@@ -379,8 +369,6 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   Handle<pat::JetCollection> AK4PUPPIJets;
   iEvent.getByToken(PUPPIjetToken_, AK4PUPPIJets);
   
-  Handle<pat::JetCollection> AK4PUPPIv15Jets;
-  iEvent.getByToken(PUPPIv15jetToken_, AK4PUPPIv15Jets);
   
   /*if(AK4PUPPIJets->empty()) {
     
@@ -491,7 +479,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   //loop on PUPPI jets to store their Pt, Eta, Phi
   for (long unsigned int i = 0; i < AK4PUPPIJets->size(); i++) {
 
-    if ( AK4PUPPIJets->at(i).pt() > 20 && fabs(AK4PUPPIJets->at(i).eta()) < 2.4 ) {
+    if ( AK4PUPPIJets->at(i).pt() > 20 /*&& fabs(AK4PUPPIJets->at(i).eta()) < 2.4*/ ) {
       
       nAK4PUPPIJets++;
       AK4PUPPIJetPt.push_back(AK4PUPPIJets->at(i).pt());
@@ -504,28 +492,11 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
     }
 
   }
-
-  //loop on PUPPIv15 jets to store their Pt, Eta, Phi
-  for (long unsigned int i = 0; i < AK4PUPPIv15Jets->size(); i++) {
-
-    if ( AK4PUPPIv15Jets->at(i).pt() > 20 && fabs(AK4PUPPIv15Jets->at(i).eta()) < 2.4 ) {
-      
-      nAK4PUPPIv15Jets++;
-      AK4PUPPIv15JetPt.push_back(AK4PUPPIv15Jets->at(i).pt());
-      AK4PUPPIv15JetEta.push_back(AK4PUPPIv15Jets->at(i).eta());
-      AK4PUPPIv15JetPhi.push_back(AK4PUPPIv15Jets->at(i).phi());
-      AK4PUPPIv15JetE.push_back(AK4PUPPIv15Jets->at(i).energy());
-      AK4PUPPIv15JetRawPt.push_back(AK4PUPPIv15Jets->at(i).correctedJet("Uncorrected").pt());
-      AK4PUPPIv15JetRawE.push_back(AK4PUPPIv15Jets->at(i).correctedJet("Uncorrected").energy());
-      
-    }
-
-  }
-   
+  
   //loop on CHS jets to store their Pt, Eta, Phi
   for (long unsigned int i = 0; i < AK4CHSJets->size(); i++) {
 
-    if ( AK4CHSJets->at(i).pt() > 20 && fabs(AK4CHSJets->at(i).eta()) < 2.4 ) {
+    if ( AK4CHSJets->at(i).pt() > 20 /*&& fabs(AK4CHSJets->at(i).eta()) < 2.4*/ ) {
 
       nAK4CHSJets++;
       AK4CHSJetPt.push_back(AK4CHSJets->at(i).pt());
@@ -539,7 +510,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
    
   }
 
-  //-------------- Handle AK4 gen jets info ----------------------------------------------------------------------------------------------------------------------
+  //-------------- If Monte Carlo, handle AK4 gen jets info ----------------------------------------------------------------------------------------------------------------------
 
   if (isMC) {
     
@@ -559,7 +530,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
     //loop on Gen jets to store their Pt, Eta, Phi
     for (long unsigned int i = 0; i < AK4GenJets->size(); i++) {
 
-      if ( AK4GenJets->at(i).pt() > 20 && fabs(AK4GenJets->at(i).eta()) < 2.4 ) {
+      if ( AK4GenJets->at(i).pt() > 20 /*&& fabs(AK4GenJets->at(i).eta()) < 2.4*/ ) {
 
 	nAK4GenJets++;
 	AK4GenJetPt.push_back(AK4GenJets->at(i).pt());
@@ -626,12 +597,6 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   AK4PUPPIJetE.clear();
   AK4PUPPIJetRawPt.clear();
   AK4PUPPIJetRawE.clear();
-  AK4PUPPIv15JetPt.clear();
-  AK4PUPPIv15JetEta.clear();
-  AK4PUPPIv15JetPhi.clear();
-  AK4PUPPIv15JetE.clear();
-  AK4PUPPIv15JetRawPt.clear();
-  AK4PUPPIv15JetRawE.clear();
   AK4CHSJetPt.clear();
   AK4CHSJetEta.clear();
   AK4CHSJetPhi.clear();

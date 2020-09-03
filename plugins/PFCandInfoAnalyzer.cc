@@ -80,10 +80,10 @@ class PFCandInfoAnalyzer : public edm::EDAnalyzer {
   // ----------member data ---------------------------
   TTree *outTree_;
   int nvtx;
-  int nPUint;
-  int nAK4PUPPIJets;
-  int nAK4CHSJets;
-  int nAK4GenJets;
+  int nPUint = 0;
+  int nAK4PUPPIJets = 0;
+  int nAK4CHSJets = 0;
+  int nAK4GenJets = 0;
   int nLeptons;
   int nPFCand;
   int run, evt, lumi;
@@ -94,8 +94,12 @@ class PFCandInfoAnalyzer : public edm::EDAnalyzer {
   AK4PUPPIJetEta, AK4PUPPIJetPhi, AK4PUPPIJetE, AK4PUPPIJetRawPt, AK4PUPPIJetRawE, AK4CHSJetPt, AK4CHSJetEta, AK4CHSJetPhi, AK4CHSJetE, AK4CHSJetRawPt, AK4CHSJetRawE, AK4GenJetPt, AK4GenJetEta, AK4GenJetPhi;
   
   std::vector<std::string> triggerNames_;
+  std::string btaggerCSVv2_;
+  std::string btaggerDeepCSV_;
+  double DeepCSVWP_;
   TH1F* triggerNamesHisto_;
   std::vector<bool> triggerBit_;
+  std::vector<bool> AK4CHSJetIsBtag;
 
   bool isMC;
   
@@ -144,6 +148,9 @@ PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
   
   //now do what ever initialization is needed
   triggerNames_ = iConfig.getParameter<std::vector<std::string> > ("triggerNames");
+  btaggerCSVv2_ = iConfig.getParameter<std::string> ("btaggerCSVv2");
+  btaggerDeepCSV_ = iConfig.getParameter<std::string> ("btaggerDeepCSV");
+  DeepCSVWP_ = iConfig.getParameter<double> ("DeepCSVWP");
 
   //--- booking the triggerNames histogram ---------                                                                                                            
   triggerNamesHisto_ = new TH1F("TriggerNames","TriggerNames",1,0,1);
@@ -208,6 +215,7 @@ PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
   outTree_->Branch("AK4CHSJetE", &AK4CHSJetE);
   outTree_->Branch("AK4CHSJetRawPt", &AK4CHSJetRawPt);
   outTree_->Branch("AK4CHSJetRawE", &AK4CHSJetRawE);
+  outTree_->Branch("AK4CHSJetIsBtag", &AK4CHSJetIsBtag);
   outTree_->Branch("AK4GenJetPt", &AK4GenJetPt);
   outTree_->Branch("AK4GenJetEta", &AK4GenJetEta);
   outTree_->Branch("AK4GenJetPhi", &AK4GenJetPhi);
@@ -499,6 +507,16 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
     if ( AK4CHSJets->at(i).pt() > 20 /*&& fabs(AK4CHSJets->at(i).eta()) < 2.4*/ ) {
 
       nAK4CHSJets++;
+      
+      bool btagged = false;
+      if ( AK4CHSJets->at(i).bDiscriminator(btaggerDeepCSV_) > DeepCSVWP_ ) {
+      
+	btagged = true;
+
+      }
+
+      AK4CHSJetIsBtag.push_back(btagged);
+
       AK4CHSJetPt.push_back(AK4CHSJets->at(i).pt());
       AK4CHSJetEta.push_back(AK4CHSJets->at(i).eta());
       AK4CHSJetPhi.push_back(AK4CHSJets->at(i).phi());
@@ -603,6 +621,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   AK4CHSJetE.clear();
   AK4CHSJetRawPt.clear();
   AK4CHSJetRawE.clear();
+  AK4CHSJetIsBtag.clear();
   AK4GenJetPt.clear();
   AK4GenJetEta.clear();
   AK4GenJetPhi.clear();

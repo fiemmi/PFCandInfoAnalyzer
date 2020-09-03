@@ -52,5 +52,5 @@ which results in the logical OR of HLT_IsoMu27_v and HLT_Ele35_WPTight_Gsf_v, an
 process.p = cms.Path(process.triggerSelectionTTToSemileptonic*process.puppiSequence*process.GetPFInfo)
 ```
 
-# PUPPI tune and b tagging
+## PUPPI tune and b tagging
 PUPPI tune is updated to v15 in the Config file. The b tagging information is not saved for PUPPIv15, so that b tagging information is stored for CHS jets. In particular, jets are tagged with DeepCSV using the medium WP.

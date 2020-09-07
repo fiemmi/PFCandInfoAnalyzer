@@ -21,7 +21,7 @@ To know if an event passed a given trigger, the branch ```std::vector<bool> trig
 
 ![alt text](http://fiemmi.web.cern.ch/fiemmi/JetMET/TriggerNames.png)
 
-that 5 triggers were saved in the ntuples. Then, if you want to see if an event passed the trigger which appears in the i-th bin of TriggerNames, look at the content of ```triggerBit->at(i-1)```, e.g., if you want to use HLT_IsoMu27_v, you can simply do 
+that 5 triggers were saved in the ntuples. Then, if you want to know if an event passed or not the trigger which appears in the i-th bin of TriggerNames, look at the content of ```triggerBit->at(i-1)```, e.g., if you want to use HLT_IsoMu27_v, you can simply do 
 
 ```c++
 if (triggerBit->at(3)) {
@@ -46,7 +46,7 @@ process.triggerSelectionTTToSemileptonic = cms.EDFilter("TriggerResultsFilter",
                                        throw = cms.bool(False)
                                        )
 ```
-which results in the logical OR of HLT_IsoMu27_v and HLT_Ele35_WPTight_Gsf_v, and ad it to your path:
+which results in the logical OR of HLT_IsoMu27_v and HLT_Ele35_WPTight_Gsf_v, and add it to your path:
 
 ```python
 process.p = cms.Path(process.triggerSelectionTTToSemileptonic*process.puppiSequence*process.GetPFInfo)

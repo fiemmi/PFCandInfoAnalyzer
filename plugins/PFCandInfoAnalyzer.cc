@@ -42,6 +42,7 @@
 #include "DataFormats/PatCandidates/interface/PFParticle.h"
 #include "DataFormats/Candidate/interface/Candidate.h"
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
+#include "DataFormats/PatCandidates/interface/PackedGenParticle.h"
 
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/MuonReco/interface/MuonSelectors.h"
@@ -86,12 +87,13 @@ class PFCandInfoAnalyzer : public edm::EDAnalyzer {
   int nAK4GenJets = 0;
   int nLeptons;
   int nPFCand;
+  int nGenParticles;
   int run, evt, lumi;
   float CHSMET, RawCHSMET, PUPPIMET, RawPUPPIMET;
   std::vector <float> PFCandPt,PFCandPx, PFCandPy, PFCandPz, PFCandEta, PFCandAbsEta, PFCandPhi, PFCandE, PFCandpdgId, PFCandCharge, PFCandPUPPIw, PFCandHCalFrac,
   PFCandHCalFracCalib, PFCandVtxAssQual, PFCandFromPV, PFCandLostInnerHits, PFCandTrackHighPurity, PFCandDZ, PFCandDXY, PFCandDZSig, PFCandDXYSig, PFCandNormChi2,
   PFCandQuality, PFCandNumHits, PFCandNumPixelHits, PFCandPixelLayersWithMeasurement, PFCandStripLayersWithMeasurement, PFCandTrackerLayersWithMeasurement, AK4PUPPIJetPt,
-  AK4PUPPIJetEta, AK4PUPPIJetPhi, AK4PUPPIJetE, AK4PUPPIJetRawPt, AK4PUPPIJetRawE, AK4CHSJetPt, AK4CHSJetEta, AK4CHSJetPhi, AK4CHSJetE, AK4CHSJetRawPt, AK4CHSJetRawE, AK4GenJetPt, AK4GenJetEta, AK4GenJetPhi;
+    AK4PUPPIJetEta, AK4PUPPIJetPhi, AK4PUPPIJetE, AK4PUPPIJetRawPt, AK4PUPPIJetRawE, AK4CHSJetPt, AK4CHSJetEta, AK4CHSJetPhi, AK4CHSJetE, AK4CHSJetRawPt, AK4CHSJetRawE, AK4GenJetPt, AK4GenJetEta, AK4GenJetPhi, genParticlePt, genParticleEta, genParticlePhi, genParticleE, genParticlepdgId, genParticleCharge;
   
   std::vector<std::string> triggerNames_;
   std::string btaggerCSVv2_;
@@ -110,6 +112,7 @@ class PFCandInfoAnalyzer : public edm::EDAnalyzer {
   edm::EDGetTokenT<pat::JetCollection> PUPPIjetToken_;
   edm::EDGetTokenT<pat::JetCollection> CHSjetToken_;
   edm::EDGetTokenT<reco::GenJetCollection> GenjetToken_;
+  edm::EDGetTokenT<pat::PackedGenParticleCollection> GenParticleToken_;
   edm::EDGetTokenT<pat::PackedCandidateCollection> pfcandToken_;
   edm::EDGetTokenT<pat::ElectronCollection> electronToken_;
   edm::EDGetTokenT<pat::MuonCollection> muonToken_;
@@ -136,6 +139,7 @@ PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
   PUPPIjetToken_(consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("AK4PUPPIJets"))),
   CHSjetToken_(consumes<pat::JetCollection>(iConfig.getParameter<edm::InputTag>("AK4CHSJets"))),
   GenjetToken_(consumes<reco::GenJetCollection>(iConfig.getParameter<edm::InputTag>("AK4GenJets"))),
+  GenParticleToken_(consumes<pat::PackedGenParticleCollection>(iConfig.getParameter<edm::InputTag>("genParticles"))),
   pfcandToken_(consumes<pat::PackedCandidateCollection>(iConfig.getParameter<edm::InputTag>("PFCands"))),
   electronToken_(consumes<pat::ElectronCollection>(iConfig.getParameter<edm::InputTag>("electrons"))),
   muonToken_(consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muons"))),
@@ -203,6 +207,13 @@ PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
   //outTree_->Branch("PFCandPixelLayersWithMeasurement", &PFCandPixelLayersWithMeasurement);
   //outTree_->Branch("PFCandStripLayersWithMeasurement", &PFCandStripLayersWithMeasurement);
   outTree_->Branch("PFCandNumLayersHit", &PFCandTrackerLayersWithMeasurement);
+  outTree_->Branch("nGenParticles", &nGenParticles,"nGenParticles/i");
+  outTree_->Branch("genParticlePt", &genParticlePt);
+  outTree_->Branch("genParticleEta", &genParticleEta);
+  outTree_->Branch("genParticlePhi", &genParticlePhi);
+  outTree_->Branch("genParticleE", &genParticleE);
+  outTree_->Branch("genParticlepdgId", &genParticlepdgId);
+  outTree_->Branch("genParticleCharge", &genParticleCharge);
   outTree_->Branch("AK4PUPPIJetPt", &AK4PUPPIJetPt);
   outTree_->Branch("AK4PUPPIJetEta", &AK4PUPPIJetEta);
   outTree_->Branch("AK4PUPPIJetPhi", &AK4PUPPIJetPhi);
@@ -528,7 +539,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
    
   }
 
-  //-------------- If Monte Carlo, handle AK4 gen jets info ----------------------------------------------------------------------------------------------------------------------
+  //-------------- If Monte Carlo, handle AK4 gen jets and gen particles info ---------------------------------------------------------------------------------------------------------
 
   if (isMC) {
     
@@ -557,6 +568,30 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 
       }
    
+    }
+
+    Handle<pat::PackedGenParticleCollection> GenParticles;
+    iEvent.getByToken(GenParticleToken_, GenParticles);
+    
+    if(GenParticles->empty()) {
+    
+    std::cout << "GenParticles is empty!!! skipping event..." << endl;
+    return;
+  
+    }
+
+    nGenParticles = GenParticles->size();
+  
+    //loop on GenParticles to store their Pt, Eta, Phi, E, pdgId, charge
+    for (int i = 0; i < nGenParticles; i++) {
+
+      genParticlePt.push_back(GenParticles->at(i).pt());
+      genParticleEta.push_back(GenParticles->at(i).eta());
+      genParticlePhi.push_back(GenParticles->at(i).phi());
+      genParticleE.push_back(GenParticles->at(i).energy());
+      genParticlepdgId.push_back(GenParticles->at(i).pdgId());
+      genParticleCharge.push_back(GenParticles->at(i).charge());
+
     }
   
   }
@@ -609,6 +644,12 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   PFCandPixelLayersWithMeasurement.clear();
   PFCandStripLayersWithMeasurement.clear();
   PFCandTrackerLayersWithMeasurement.clear();
+  genParticlePt.clear();
+  genParticleEta.clear();
+  genParticlePhi.clear();
+  genParticleE.clear();
+  genParticlepdgId.clear();
+  genParticleCharge.clear();
   AK4PUPPIJetPt.clear();
   AK4PUPPIJetEta.clear();
   AK4PUPPIJetPhi.clear();

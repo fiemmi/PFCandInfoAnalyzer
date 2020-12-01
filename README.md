@@ -17,19 +17,6 @@ scramv1 b -j 5
 As the MC true information is not available in data, to avoid ProductNotFound errors, you should tell the analyzer if you are going to run on MC or data. Change the variable ```bool isMC``` in the Config file accordingly.
 
 ## Trigger workflow
-To know if an event passed a given trigger, the branch ```std::vector<bool> triggerBit``` is used. First, you should look at the TriggerNames histogram to know which triggers were saved in the ntuples. For example, you can see here:
-
-![alt text](http://fiemmi.web.cern.ch/fiemmi/JetMET/TriggerNames.png)
-
-that 5 triggers were saved in the ntuples. Then, if you want to know if an event passed or not the trigger which appears in the i-th bin of TriggerNames, look at the content of ```triggerBit->at(i-1)```, e.g., if you want to use HLT_IsoMu27_v, you can simply do 
-
-```c++
-if (triggerBit->at(3)) {
-
-...do things
-
-}
-```
 ### MC
 The Config file is written in such a way that no trigger is applied at ntuplization level. Thus, to apply triggers, you shall simply do what is described in the previous lines.
 ### Data
@@ -50,6 +37,20 @@ which results in the logical OR of HLT_IsoMu27_v and HLT_Ele35_WPTight_Gsf_v, an
 
 ```python
 process.p = cms.Path(process.triggerSelectionTTToSemileptonic*process.puppiSequence*process.GetPFInfo)
+```
+### Trigger info in output ntuples
+In case you want to know if an event stored in the output ntuples passed a given trigger, this info is stored in the branch ```std::vector<bool> triggerBit```. First, you should look at the TriggerNames histogram to know which triggers were saved in the ntuples. For example, you can see here:
+
+![alt text](http://fiemmi.web.cern.ch/fiemmi/JetMET/TriggerNames.png)
+
+that 5 triggers were saved in the ntuples. Then, if you want to know if an event passed the trigger which appears in the i-th bin of TriggerNames, look at the content of ```triggerBit->at(i-1)```; e.g., if you want to use HLT_IsoMu27_v, you can simply do 
+
+```c++
+if (triggerBit->at(3)) {
+
+...do things
+
+}
 ```
 
 ## PUPPI tune and b tagging

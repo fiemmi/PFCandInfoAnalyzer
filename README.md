@@ -18,7 +18,7 @@ As the MC true information is not available in data, to avoid ProductNotFound er
 
 ## Trigger workflow
 ### MC
-The Config file is written in such a way that no trigger is applied at ntuplization level. Thus, to apply triggers, you shall simply do what is described in the previous lines.
+The Config file is written in such a way that no trigger is applied at ntuplization level. Thus, to apply triggers, you shall simply do what is described in the coming section 'Trigger info in output ntuples'.
 ### Data
 Due to the big size of data events, the Config file is written in such a way that triggers are applied at ntuplization level. This is done _via_ an ```EDFilter```. For example, to get a data sample to be used to select semileptonic ttbar events, you may want to do:
 

@@ -54,6 +54,7 @@
 #include "TH1.h"
 #include "TTree.h"
 #include <vector>
+#include <TLorentzVector.h>
 #include "TBranch.h"
 
 //
@@ -89,7 +90,7 @@ class PFCandInfoAnalyzer : public edm::EDAnalyzer {
   int nPFCand;
   int nGenParticles;
   int run, evt, lumi;
-  float CHSMET, RawCHSMET, PUPPIMET, RawPUPPIMET;
+  float CHSMET, CHSUnclusteredMET, RawCHSMET, PUPPIMET, PUPPIUnclusteredMET, RawPUPPIMET;
   std::vector <float> PFCandPt,PFCandPx, PFCandPy, PFCandPz, PFCandEta, PFCandAbsEta, PFCandPhi, PFCandE, PFCandpdgId, PFCandCharge, PFCandPUPPIw, PFCandHCalFrac,
   PFCandHCalFracCalib, PFCandVtxAssQual, PFCandFromPV, PFCandLostInnerHits, PFCandTrackHighPurity, PFCandDZ, PFCandDXY, PFCandDZSig, PFCandDXYSig, PFCandNormChi2,
   PFCandQuality, PFCandNumHits, PFCandNumPixelHits, PFCandPixelLayersWithMeasurement, PFCandStripLayersWithMeasurement, PFCandTrackerLayersWithMeasurement, AK4PUPPIJetPt,
@@ -231,8 +232,10 @@ PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
   outTree_->Branch("AK4GenJetEta", &AK4GenJetEta);
   outTree_->Branch("AK4GenJetPhi", &AK4GenJetPhi);
   outTree_->Branch("CHSMET", &CHSMET);
+  outTree_->Branch("CHSUnclMET", &CHSUnclusteredMET);
   outTree_->Branch("RawCHSMET", &RawCHSMET);
   outTree_->Branch("PUPPIMET", &PUPPIMET);
+  outTree_->Branch("PUPPIUnclMET", &PUPPIUnclusteredMET);
   outTree_->Branch("RawPUPPIMET", &RawPUPPIMET);
 
   triggerNamesHisto_->Write();
@@ -496,6 +499,8 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 
   
   //loop on PUPPI jets to store their Pt, Eta, Phi
+
+  TLorentzVector PUPPIJetsTLVector;
   for (long unsigned int i = 0; i < AK4PUPPIJets->size(); i++) {
 
     if ( AK4PUPPIJets->at(i).pt() > 20 /*&& fabs(AK4PUPPIJets->at(i).eta()) < 2.4*/ ) {
@@ -507,12 +512,17 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       AK4PUPPIJetE.push_back(AK4PUPPIJets->at(i).energy());
       AK4PUPPIJetRawPt.push_back(AK4PUPPIJets->at(i).correctedJet("Uncorrected").pt());
       AK4PUPPIJetRawE.push_back(AK4PUPPIJets->at(i).correctedJet("Uncorrected").energy());
+      TLorentzVector myPUPPIJetTLVector;
+      myPUPPIJetTLVector.SetPtEtaPhiE(AK4PUPPIJets->at(i).pt(), AK4PUPPIJets->at(i).eta(), AK4PUPPIJets->at(i).phi(), AK4PUPPIJets->at(i).energy());
+      PUPPIJetsTLVector += myPUPPIJetTLVector;
       
     }
 
   }
   
   //loop on CHS jets to store their Pt, Eta, Phi
+
+  TLorentzVector CHSJetsTLVector;
   for (long unsigned int i = 0; i < AK4CHSJets->size(); i++) {
 
     if ( AK4CHSJets->at(i).pt() > 20 /*&& fabs(AK4CHSJets->at(i).eta()) < 2.4*/ ) {
@@ -534,6 +544,9 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       AK4CHSJetE.push_back(AK4CHSJets->at(i).energy());
       AK4CHSJetRawPt.push_back(AK4CHSJets->at(i).correctedJet("Uncorrected").pt());
       AK4CHSJetRawE.push_back(AK4CHSJets->at(i).correctedJet("Uncorrected").energy());
+      TLorentzVector myCHSJetTLVector;
+      myCHSJetTLVector.SetPtEtaPhiE(AK4CHSJets->at(i).pt(), AK4CHSJets->at(i).eta(), AK4CHSJets->at(i).phi(), AK4CHSJets->at(i).energy());
+      CHSJetsTLVector += myCHSJetTLVector;
 
     }
    
@@ -600,12 +613,14 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   iEvent.getByToken(METToken_, MET);
   
   CHSMET = MET->at(0).pt();
+  CHSUnclusteredMET = sqrt( pow(MET->at(0).px() + CHSJetsTLVector.Px(), 2) + pow(MET->at(0).py() + CHSJetsTLVector.Py(), 2) );
   RawCHSMET = MET->at(0).uncorPt();
 
   Handle<pat::METCollection> PuppiMET;
   iEvent.getByToken(PUPPIMETToken_, PuppiMET);
   
   PUPPIMET = PuppiMET->at(0).pt();
+  PUPPIUnclusteredMET = sqrt( pow(PuppiMET->at(0).px() + PUPPIJetsTLVector.Px(), 2) + pow(PuppiMET->at(0).py() + PUPPIJetsTLVector.Py(), 2) );
   RawPUPPIMET = PuppiMET->at(0).uncorPt();
   
 

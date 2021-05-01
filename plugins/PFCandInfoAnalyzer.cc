@@ -90,11 +90,11 @@ class PFCandInfoAnalyzer : public edm::EDAnalyzer {
   int nPFCand;
   int nGenParticles;
   int run, evt, lumi;
-  float CHSMET, CHSUnclusteredMET, RawCHSMET, RawCHSUnclusteredMET, PUPPIMET, PUPPIUnclusteredMET, RawPUPPIMET, RawPUPPIUnclusteredMET;
+  float CHSMET, CHSUnclusteredMET, RawCHSMET, RawCHSUnclusteredMET, PUPPIMET, PUPPIUnclusteredMET, RawPUPPIMET, RawPUPPIUnclusteredMET, genMET;
   std::vector <float> PFCandPt,PFCandPx, PFCandPy, PFCandPz, PFCandEta, PFCandAbsEta, PFCandPhi, PFCandE, PFCandpdgId, PFCandCharge, PFCandPUPPIw, PFCandHCalFrac,
   PFCandHCalFracCalib, PFCandVtxAssQual, PFCandFromPV, PFCandLostInnerHits, PFCandTrackHighPurity, PFCandDZ, PFCandDXY, PFCandDZSig, PFCandDXYSig, PFCandNormChi2,
   PFCandQuality, PFCandNumHits, PFCandNumPixelHits, PFCandPixelLayersWithMeasurement, PFCandStripLayersWithMeasurement, PFCandTrackerLayersWithMeasurement, AK4PUPPIJetPt,
-    AK4PUPPIJetEta, AK4PUPPIJetPhi, AK4PUPPIJetE, AK4PUPPIJetRawPt, AK4PUPPIJetRawE, AK4CHSJetPt, AK4CHSJetEta, AK4CHSJetPhi, AK4CHSJetE, AK4CHSJetRawPt, AK4CHSJetRawE, AK4GenJetPt, AK4GenJetEta, AK4GenJetPhi, genParticlePt, genParticleEta, genParticlePhi, genParticleE, genParticlepdgId, genParticleCharge;
+    AK4PUPPIJetEta, AK4PUPPIJetPhi, AK4PUPPIJetE, AK4PUPPIJetRawPt, AK4PUPPIJetRawE, AK4CHSJetPt, AK4CHSJetEta, AK4CHSJetPhi, AK4CHSJetE, AK4CHSJetRawPt, AK4CHSJetRawE, AK4GenJetPt, AK4GenJetEta, AK4GenJetPhi, AK4GenJetE, genParticlePt, genParticleEta, genParticlePhi, genParticleE, genParticlepdgId, genParticleCharge;
   
   std::vector<std::string> triggerNames_;
   std::string btaggerCSVv2_;
@@ -231,6 +231,7 @@ PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
   outTree_->Branch("AK4GenJetPt", &AK4GenJetPt);
   outTree_->Branch("AK4GenJetEta", &AK4GenJetEta);
   outTree_->Branch("AK4GenJetPhi", &AK4GenJetPhi);
+  outTree_->Branch("AK4GenJetE", &AK4GenJetE);
   outTree_->Branch("CHSMET", &CHSMET);
   outTree_->Branch("CHSUnclMET", &CHSUnclusteredMET);
   outTree_->Branch("RawCHSMET", &RawCHSMET);
@@ -239,7 +240,7 @@ PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
   outTree_->Branch("PUPPIUnclMET", &PUPPIUnclusteredMET);
   outTree_->Branch("RawPUPPIMET", &RawPUPPIMET);
   outTree_->Branch("RawPUPPIUnclMET", &RawPUPPIUnclusteredMET);
-
+  outTree_->Branch("genMET", &genMET);
   triggerNamesHisto_->Write();
 
 }
@@ -580,6 +581,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 	AK4GenJetPt.push_back(AK4GenJets->at(i).pt());
 	AK4GenJetEta.push_back(AK4GenJets->at(i).eta());
 	AK4GenJetPhi.push_back(AK4GenJets->at(i).phi());
+	AK4GenJetE.push_back(AK4GenJets->at(i).energy());
 
       }
    
@@ -626,6 +628,13 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   PUPPIUnclusteredMET = sqrt( pow(PuppiMET->at(0).px() + PUPPIJetsTLVector.Px(), 2) + pow(PuppiMET->at(0).py() + PUPPIJetsTLVector.Py(), 2) );
   RawPUPPIMET = PuppiMET->at(0).uncorPt();
   RawPUPPIUnclusteredMET = sqrt( pow(PuppiMET->at(0).uncorPx() + PUPPIJetsTLVector.Px(), 2) + pow(PuppiMET->at(0).uncorPy() + PUPPIJetsTLVector.Py(), 2) );
+
+  //if isMC, store genMET
+  if (isMC) {
+
+    genMET=MET->at(0).genMET()->pt();
+
+  }
 
   outTree_->Fill();
  
@@ -684,7 +693,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   AK4GenJetPt.clear();
   AK4GenJetEta.clear();
   AK4GenJetPhi.clear();
-
+  AK4GenJetE.clear();
   
 
 

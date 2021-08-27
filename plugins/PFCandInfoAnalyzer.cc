@@ -91,7 +91,7 @@ class PFCandInfoAnalyzer : public edm::EDAnalyzer {
   int nGenParticles;
   int run, evt, lumi;
   float CHSMET, CHSUnclusteredMET, RawCHSMET, RawCHSUnclusteredMET, PUPPIMET, PUPPIUnclusteredMET, RawPUPPIMET, RawPUPPIUnclusteredMET, genMET;
-  std::vector <float> PFCandPt,PFCandPx, PFCandPy, PFCandPz, PFCandEta, PFCandAbsEta, PFCandPhi, PFCandE, PFCandpdgId, PFCandCharge, PFCandPUPPIw, PFCandHCalFrac,
+  std::vector <float> PFCandPt,PFCandPx, PFCandPy, PFCandPz, PFCandEta, PFCandAbsEta, PFCandPhi, PFCandE, PFCandpdgId, PFCandCharge, PFCandPUPPIw, PFCandPUPPIalpha, PFCandHCalFrac,
   PFCandHCalFracCalib, PFCandVtxAssQual, PFCandFromPV, PFCandLostInnerHits, PFCandTrackHighPurity, PFCandDZ, PFCandDXY, PFCandDZSig, PFCandDXYSig, PFCandNormChi2,
   PFCandQuality, PFCandNumHits, PFCandNumPixelHits, PFCandPixelLayersWithMeasurement, PFCandStripLayersWithMeasurement, PFCandTrackerLayersWithMeasurement, AK4PUPPIJetPt,
     AK4PUPPIJetEta, AK4PUPPIJetPhi, AK4PUPPIJetE, AK4PUPPIJetRawPt, AK4PUPPIJetRawE, AK4CHSJetPt, AK4CHSJetEta, AK4CHSJetPhi, AK4CHSJetE, AK4CHSJetRawPt, AK4CHSJetRawE, AK4GenJetPt, AK4GenJetEta, AK4GenJetPhi, AK4GenJetE, genParticlePt, genParticleEta, genParticlePhi, genParticleE, genParticlepdgId, genParticleCharge;
@@ -191,6 +191,7 @@ PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
   outTree_->Branch("PFCandpdgId", &PFCandpdgId);
   outTree_->Branch("PFCandCharge", &PFCandCharge);
   outTree_->Branch("PFCandPUPPIw", &PFCandPUPPIw);
+  outTree_->Branch("PFCandPUPPIalpha", &PFCandPUPPIalpha);
   outTree_->Branch("PFCandHCalFrac", &PFCandHCalFrac);
   outTree_->Branch("PFCandHCalFracCalib", &PFCandHCalFracCalib);
   outTree_->Branch("PFCandVtxAssQual", &PFCandVtxAssQual);
@@ -434,6 +435,64 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   
   //loop on PF candidates to store their Pt, Eta, Phi, E, pdgId, charge, PUPPI weight
   for (int i = 0; i < nPFCand; i++) {
+    
+    float alpha = 0.0;
+
+    //compute PUPPIalpha
+    alpha = 0.0;
+    
+    if(std::abs(PFCands->at(i).eta()) < 2.5) {//PF candidate is inside the tracking volume
+
+      for (int j = 0; j < nPFCand; j++) {
+	
+	if (!(std::abs(PFCands->at(j).charge()) == 1 && PFCands->at(j).fromPV() > 1)) continue; //in the tracking volume, take only charged PFs from LV in alpha computation
+
+	float deltaR = 0.0;
+
+	if (j != i) {
+	
+	  float deltaEta = fabs( PFCands->at(i).eta() - PFCands->at(j).eta() );
+	  float deltaPhi = fabs( PFCands->at(i).phi() - PFCands->at(j).phi() );
+	  if(deltaPhi > 3.14159265358979323846) deltaPhi  = 2*3.14159265358979323846 - deltaPhi;         
+	  deltaR = sqrt( pow(deltaEta, 2) + pow(deltaPhi, 2) );
+      
+	  if (deltaR < 0.4) {
+
+	    alpha += pow(PFCands->at(j).pt()/deltaR ,2);
+	
+	  }
+	  
+	}//end j != i
+    
+      }//end inner loop on PF cands
+    
+    }//end abs(PFCandEta) < 2.5
+
+    else {//PF candidate is outside the tracking volume
+
+      for (int j = 0; j < nPFCand; j++) {
+	
+	float deltaR = 0.0;
+
+	if (j != i) {
+	
+	  float deltaEta = fabs( PFCands->at(i).eta() - PFCands->at(j).eta() );
+	  float deltaPhi = fabs( PFCands->at(i).phi() - PFCands->at(j).phi() );
+	  if(deltaPhi > 3.14159265358979323846) deltaPhi  = 2*3.14159265358979323846 - deltaPhi;         
+	  deltaR = sqrt( pow(deltaEta, 2) + pow(deltaPhi, 2) );
+      
+	  if (deltaR < 0.4) {
+
+	    alpha += pow(PFCands->at(j).pt()/deltaR ,2);
+	
+	  }
+
+	}
+    
+      }//end inner loop on PF cands
+    
+    }//end abs(PFCandEta) > 2.5   
+    
 
     PFCandPt.push_back(PFCands->at(i).pt());
     PFCandPx.push_back(PFCands->at(i).px());
@@ -446,6 +505,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
     PFCandpdgId.push_back(PFCands->at(i).pdgId());
     PFCandCharge.push_back(PFCands->at(i).charge());
     PFCandPUPPIw.push_back(PFCands->at(i).puppiWeight());
+    PFCandPUPPIalpha.push_back(log(alpha));
     PFCandNumHits.push_back(PFCands->at(i).numberOfHits());
     PFCandNumPixelHits.push_back(PFCands->at(i).numberOfPixelHits());
     PFCandPixelLayersWithMeasurement.push_back(PFCands->at(i).pixelLayersWithMeasurement());
@@ -498,7 +558,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       
     }
 
-  }
+  }//end loop on PF candidates
 
   
   //loop on PUPPI jets to store their Pt, Eta, Phi
@@ -654,6 +714,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   PFCandpdgId.clear();
   PFCandCharge.clear();
   PFCandPUPPIw.clear();
+  PFCandPUPPIalpha.clear();
   PFCandHCalFrac.clear();
   PFCandHCalFracCalib.clear();
   PFCandVtxAssQual.clear();

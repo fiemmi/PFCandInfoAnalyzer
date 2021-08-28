@@ -1,0 +1,7 @@
+file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80K_v9-v1/pickevents_1.root
+file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80K_v9-v1/pickevents_2.root
+file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80K_v9-v1/pickevents_3.root
+file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80K_v9-v1/pickevents_4.root
+file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80K_v9-v1/pickevents_5.root
+file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80K_v9-v1/pickevents_6.root
+file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80K_v9-v1/pickevents_7.root

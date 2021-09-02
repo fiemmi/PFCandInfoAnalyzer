@@ -18,6 +18,7 @@ Scripts contained in this repository were originally written to accomplish pileu
 
 ## Step-by-step procedure
 The procedure to get the wanted output `.root` file is made by several steps. They are listed below together with an explanation for each of them.
+**CAVEAT**: the following steps won't work out-of-the-box. You'll need to make changes here and there: update the paths to macros, the number of jobs to be run and so on to your needs.
 
 1. **Ntuplize a given number of events from no-PU files**. In the configuration file of PFCandInfoAnalyzer (`python/ConfFile_cfg.py`), ntuplize a given number of events from a no-PU file through the `fileNames` parameter. The number can be chosen by editing the `process.maxEvents` parameter.
 ```
@@ -45,3 +46,23 @@ hadd some_name_for_outputfile.root condorJob_*
 ```
 6. **Save runNo, lumiSec, evtNo of PU events**. Repeat instructions in step 2 to save the run number, lumi section and event number of each PU event to a .txt file.
 7. **Set up the sorting of TTrees**. You have now two lists of run number, lumi section and event number in the form of two `.txt` files. Feed them to the `get_index.py` script to find the correspondance between events in no-PU and PU file. The script will produce a third list containing, for each event in the no-PU file, the index pointing at that event in the PU file. The script will also split this final list in *n* sublists, where *n* can be decided by the user, and save them.
+8. **Sort PU events**. This is done by running condor jobs for `sorting_framework/sortTrees.cpp`. This macro takes a sublist produced in step 7 as input and uses the indices to sort the PU events in the same order of the no-PU events:
+```
+cd condor/sortTrees
+condor_submit submit.sub
+```
+9. **Split the no-PU file in subfiles**. Each of the PU files is now sorted, but the no-PU file is still a single, big file. Split it to *n* subfiles, where *n* ccomes from step 7, using `flatTree_slicer.cpp`:
+```
+cd sliced_noPUfiles
+root -l -q flatTree_slicer.cpp(n)+
+```
+10. **Merge information from PU and no-PU events**. Now that you have the same number of PU and no-PU files and events are in the same order, merge the files into a single file by running condor jobs executing `createTreePU_noPU_framework/createTreePU_noPU.cpp`:
+```
+cd condor/createTreePU_noPU
+condor_submit submit.sub
+```
+11. **Perform matching between PF candidates**. Finally, match PF candidates from no-PU and PU events by running condor jobs for `PFmatching/PFmatching.cpp`:
+```
+cd condor/PFmatching
+condor_submit submit.sub
+```

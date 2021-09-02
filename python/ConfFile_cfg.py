@@ -35,8 +35,10 @@ process.source = cms.Source("PoolSource",
     #fileNames = cms.untracked.vstring('file:root://cmsxrootd.fnal.gov///store/mc/RunIISummer19UL17MiniAOD/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/MINIAODSIM/NoPU_106X_mc2017_realistic_v6-v3/40000/FDBFC4B3-F359-5B49-8F79-2075C6024381.root'),
     #NEW EPSILONPU FILES
     #fileNames = cms.untracked.vstring('file:root://xrootd-cms.infn.it///store/mc/RunIISummer19UL17MiniAOD/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/MINIAODSIM/EpsilonPU_106X_mc2017_realistic_v6-v2/100000/107F8FFF-6F20-A14D-BC89-E0C761BC300D.root', 'file:root://xrootd-cms.infn.it///store/mc/RunIISummer19UL17MiniAOD/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/MINIAODSIM/EpsilonPU_106X_mc2017_realistic_v6-v2/100000/1C2E4841-AA5B-404E-A412-099C663A8F22.root', 'file:root://xrootd-cms.infn.it///store/mc/RunIISummer19UL17MiniAOD/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/MINIAODSIM/EpsilonPU_106X_mc2017_realistic_v6-v2/100000/240EE989-903B-C84D-939F-D69E454EF312.root', 'file:root://xrootd-cms.infn.it///store/mc/RunIISummer19UL17MiniAOD/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/MINIAODSIM/EpsilonPU_106X_mc2017_realistic_v6-v2/100000/2467473E-E620-BD44-9971-0565D024DFD0.root'),
-    #EPSILONPU FILES WITH PUPPIv15 WEIGHTS
+    #NEW miniAODv2 FILES WITH PUPPIv15 WEIGHTS
     #fileNames = cms.untracked.vstring('file:root://cmsxrootd.fnal.gov///store/mc/RunIISummer19UL17MiniAODv2/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/MINIAODSIM/EpsilonPU_106X_mc2017_realistic_v9-v1/00000/1A7AF728-10B7-2345-A49A-FBAB937CEADF.root'),
+    #fileNames = cms.untracked.vstring('file:root://cmsxrootd.fnal.gov///store/mc/RunIISummer19UL17MiniAODv2/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v1/00000/00379E19-FB20-7044-83F6-7A9E41F1BD1D.root'),
+    #FILES FROM emdPickEvents
     #fileNames = cms.untracked.vstring('file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT40k/pickevents_1.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT40k/pickevents_2.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT40k/pickevents_3.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT40k/pickevents_4.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT40k/pickevents_5.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT40k/pickevents_6.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT40k/pickevents_7.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT40k/pickevents_8.root',),
     #fileNames = cms.untracked.vstring('file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_1.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_2.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_3.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_4.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_5.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_6.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_7.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_8.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_9.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_10.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_11.root',  'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_12.root',  'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_13.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_14.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_15.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_16.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_17.root',),
     #TO BE USED WITH CONDOR
@@ -78,7 +80,7 @@ process.triggerSelectionTTToSemileptonic = cms.EDFilter("TriggerResultsFilter",
 """
 Update PUPPI to v15
 """
-
+"""
 from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
 process.ak4PuppiJets  = ak4PFJets.clone (src = 'puppi', doAreaFastjet = True, jetPtMin = 2.)
 
@@ -90,7 +92,7 @@ process.patJetsPuppi.addGenJetMatch = cms.bool(isMC)
 
 from CommonTools.PileupAlgos.customizePuppiTune_cff import UpdatePuppiTuneV15
 UpdatePuppiTuneV15(process, isMC)
-
+"""
 process.GetPFInfo = cms.EDAnalyzer('PFCandInfoAnalyzer',
                                    vertices  = cms.InputTag("offlineSlimmedPrimaryVertices"),
                                    PUinfo  = cms.InputTag("slimmedAddPileupInfo"),
@@ -130,13 +132,15 @@ process.TFileService = cms.Service("TFileService",
                                        #fileName = cms.string('flatTree_JetHT_Run2017B.root')
                                        #fileName = cms.string('flatTree_SingleMuon_Run2017B.root')
                                        #fileName = cms.string('flatTree_SingleElectron_Run2017B.root')
-                                       #fileName = cms.string('try_.root')
+                                       #fileName = cms.string('try_casting_reweighting.root')
                                        #TO BE USED WITH CONDOR
                                        fileName = cms.string(options.outputFile),
                                    )
 if (not isMC) :
-    process.p = cms.Path(process.triggerSelectionQCD*process.puppiSequence*process.GetPFInfo)
+    #process.p = cms.Path(process.triggerSelectionQCD*process.puppiSequence*process.GetPFInfo)
+    process.p = cms.Path(process.triggerSelectionQCD*process.GetPFInfo)
 else:
-    process.p = cms.Path(process.puppiSequence*process.GetPFInfo)
+    #process.p = cms.Path(process.puppiSequence*process.GetPFInfo)
+    process.p = cms.Path(process.GetPFInfo)
 
 #print process.dumpPython() 

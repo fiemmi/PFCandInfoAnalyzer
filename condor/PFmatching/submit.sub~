@@ -1,0 +1,10 @@
+universe	      = vanilla
+executable            = PFmatching.sh
+arguments             = $(ProcId) $(ClusterId) $(ProcId)
+output                = ../output/PFmatching.$(ClusterId).$(ProcId).out
+error                 = ../error/PFmatching.$(ClusterId).$(ProcId).err
+log                   = ../log/PFmatching.$(ClusterId).log
+when_to_transfer_output = ON_EXIT
+should_transfer_files = YES
++JobFlavour = "longlunch"
+queue 70

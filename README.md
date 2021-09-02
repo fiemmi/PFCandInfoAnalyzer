@@ -1,5 +1,5 @@
 # PFCandInfoAnalyzer
-This analyzer is used to store information about PF candidates and jets in a flatTree format.
+This analyzer is used to store information about PF candidates and jets in a flatTree format and preprocess it for ML tasks.
 
 ## Getting started
 The analyzer will work with CMSSW_10_6_>=17. To get started do:
@@ -13,45 +13,35 @@ cd PFCandInfo
 git clone https://github.com/fiemmi/PFCandInfoAnalyzer
 scramv1 b -j 5
 ```
-## Working on MC or data
-As the MC true information is not available in data, to avoid ProductNotFound errors, you should tell the analyzer if you are going to run on MC or data. Change the variable ```bool isMC``` in the Config file accordingly.
+## General idea of this repository
+Scripts contained in this repository were originally written to accomplish pileup (PU) mitigation studies inside the CMS Collaboration. The main idea is to start from two Monte Carlo QCD files containing the same simulated events, the first file being a no-PU file, while the second one having PU superimposed. The final goal is to have a `.root` output file storing, event-by-event, information about ParticleFlow (PF) candidates coming from PU and n-PU events in a coherent way.
 
-## Trigger workflow
-### MC
-The Config file is written in such a way that no trigger is applied at ntuplization level. Thus, to apply triggers, you shall simply do what is described in the coming section 'Trigger info in output ntuples'.
-### Data
-Due to the big size of data events, the Config file is written in such a way that triggers are applied at ntuplization level. This is done _via_ an ```EDFilter```. For example, to get a data sample to be used to select semileptonic ttbar events, you may want to do:
+## Step-by-step procedure
+The procedure to get the wanted output `.root` file is made by several steps. They are listed below together with an explanation for each of them.
 
-```python
-process.triggerSelectionTTToSemileptonic = cms.EDFilter("TriggerResultsFilter",
-                                       triggerConditions = cms.vstring(
-                                       "HLT_IsoMu27_v*",
-                                       "HLT_Ele35_WPTight_Gsf_v*",
-                                       ),
-                                       hltResults = cms.InputTag( "TriggerResults", "", "HLT" ),
-                                       l1tResults = cms.InputTag( "" ),
-                                       throw = cms.bool(False)
-                                       )
+1. **Ntuplize a given number of events from no-PU files**. In the configuration file of PFCandInfoAnalyzer (`python/ConfFile_cfg.py`), ntuplize a given number of events from a no-PU file through the `fileNames` parameter. The number can be chosen by editing the `process.maxEvents` parameter.
 ```
-which results in the logical OR of HLT_IsoMu27_v and HLT_Ele35_WPTight_Gsf_v, and add it to your path:
-
-```python
-process.p = cms.Path(process.triggerSelectionTTToSemileptonic*process.puppiSequence*process.GetPFInfo)
+cmsenv
+voms-proxy-init --voms cms
+cmsRun /your/path/PFCandInfo/PFCandInfoAnalyzer/python/ConfFile_cfg.py
 ```
-### Trigger info in output ntuples
-In case you want to know if an event stored in the output ntuples passed a given trigger, this info is stored in the branch ```std::vector<bool> triggerBit```. First, you should look at the TriggerNames histogram to know which triggers were saved in the ntuples. For example, you can see here:
-
-![alt text](http://fiemmi.web.cern.ch/fiemmi/JetMET/TriggerNames.png)
-
-that 5 triggers were saved in the ntuples. Then, if you want to know if an event passed the trigger which appears in the i-th bin of TriggerNames, look at the content of ```triggerBit->at(i-1)```; e.g., if you want to use HLT_IsoMu27_v, you can simply do 
-
-```c++
-if (triggerBit->at(3)) {
-
-...do things
-
-}
+2. **Save runNo, lumiSec, evtNo of no-PU events**. Run the script `printEvents.C` to save the run number, lumi section and event number of each no-PU event that you ntuplized in step 1 to a `.txt` file. 
+3. **Extract the very same events from the PU file**. Let's suppose you ntuplized the first *n* events from the no-PU file. Running `cmsRun` on the first *n* events of the PU file won't ntuplize the same events (due to how events are generated). Thus, the very same events that have been ntuplized in step 1 must first be extracted from the PU sample. This is done through the `edmPickEvents.py ` script. It needs the DAS string for the file you want to extract events from and the `.txt` file that has been produced in step 2 as inputs. For example:
 ```
-
-## PUPPI tune and b tagging
-PUPPI tune is updated to v15 in the Config file. The b tagging information is not saved for PUPPIv15, so that b tagging information is stored for CHS jets. In particular, jets are tagged with DeepCSV using the medium WP.
+edmPickEvents.py "/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/RunIISummer19UL17MiniAOD-FlatPU0to70_106X_mc2017_realistic_v6-v3/MINIAODSIM" events_EpsilonPU_EXT80k.txt --crab
+```
+The `--crab` option will produce a crab configuration file that will do the job. You will have to slightly modify it to fit your needs (e.g., change the site where to write the output files). Launch CRAB jobs:
+```
+source /cvmfs/cms.cern.ch/crab3/crab.sh
+crab submit -c pickevents_crab.py
+```
+4. **Launch condor jobs to ntuplize the PU events**. Edit the configuration file of PFCandInfoAnalyzer to work for condor jobs: `fileNames` should be equal to `cms.untracked.vstring(options.inputFiles)` and `fileName` should be equal to `cms.string(options.outputFile)`. Then, go to `condor/PFCandInfoAnalyzer` and edit `fileList.txt` with the path to the files that CRAB has produced. Finally, run the analyzer on them by doing:
+```
+condor_submit submit.sub
+```
+5. **Merge the output files of the condor jobs**.
+```
+hadd some_name_for_outputfile.root condorJob_*
+```
+6. **Save runNo, lumiSec, evtNo of PU events**. Repeat instructions in step 2 to save the run number, lumi section and event number of each PU event to a .txt file.
+7. **Set up the sorting of TTrees**. You have now two lists of run number, lumi section and event number in the form of two `.txt` files. Feed them to the `get_index.py` script to find the correspondance between events in no-PU and PU file. The script will produce a third list containing, for each event in the no-PU file, the index pointing at that event in the PU file. The script will also split this final list in *n* sublists, where *n* can be decided by the user, and save them.

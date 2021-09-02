@@ -91,6 +91,8 @@ class PFCandInfoAnalyzer : public edm::EDAnalyzer {
   int nGenParticles;
   int run, evt, lumi;
   float CHSMET, CHSUnclusteredMET, RawCHSMET, RawCHSUnclusteredMET, PUPPIMET, PUPPIUnclusteredMET, RawPUPPIMET, RawPUPPIUnclusteredMET, genMET;
+  //next line is for debugging purposes
+  std::vector <float> AK4PUPPIJetPt_fromConstituents, AK4PUPPIJetEta_fromConstituents, AK4PUPPIJetPhi_fromConstituents, AK4PUPPIJetE_fromConstituents; 
   std::vector <float> PFCandPt,PFCandPx, PFCandPy, PFCandPz, PFCandEta, PFCandAbsEta, PFCandPhi, PFCandE, PFCandpdgId, PFCandCharge, PFCandPUPPIw, PFCandPUPPIalpha, PFCandHCalFrac,
   PFCandHCalFracCalib, PFCandVtxAssQual, PFCandFromPV, PFCandLostInnerHits, PFCandTrackHighPurity, PFCandDZ, PFCandDXY, PFCandDZSig, PFCandDXYSig, PFCandNormChi2,
   PFCandQuality, PFCandNumHits, PFCandNumPixelHits, PFCandPixelLayersWithMeasurement, PFCandStripLayersWithMeasurement, PFCandTrackerLayersWithMeasurement, AK4PUPPIJetPt,
@@ -222,6 +224,10 @@ PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
   outTree_->Branch("AK4PUPPIJetE", &AK4PUPPIJetE);
   outTree_->Branch("AK4PUPPIJetRawPt", &AK4PUPPIJetRawPt);
   outTree_->Branch("AK4PUPPIJetRawE", &AK4PUPPIJetRawE);
+  outTree_->Branch("AK4PUPPIJetPt_fromConstituents", &AK4PUPPIJetPt_fromConstituents);
+  outTree_->Branch("AK4PUPPIJetEta_fromConstituents", &AK4PUPPIJetEta_fromConstituents);
+  outTree_->Branch("AK4PUPPIJetPhi_fromConstituents", &AK4PUPPIJetPhi_fromConstituents);
+  outTree_->Branch("AK4PUPPIJetE_fromConstituents", &AK4PUPPIJetE_fromConstituents);
   outTree_->Branch("AK4CHSJetPt", &AK4CHSJetPt);
   outTree_->Branch("AK4CHSJetEta", &AK4CHSJetEta);
   outTree_->Branch("AK4CHSJetPhi", &AK4CHSJetPhi);
@@ -270,7 +276,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   run    = iEvent.id().run();
   evt    = iEvent.id().event();
   lumi   = iEvent.id().luminosityBlock();
-
+  //cout << run << ":" << lumi << ":" << evt << endl;
   //-------------- Handle vertices info ----------------------------------------------------------------------------------------------------------------------
 
   Handle<reco::VertexCollection> vertices;
@@ -567,18 +573,35 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   for (long unsigned int i = 0; i < AK4PUPPIJets->size(); i++) {
 
     if ( AK4PUPPIJets->at(i).pt() > 20 /*&& fabs(AK4PUPPIJets->at(i).eta()) < 2.4*/ ) {
-      
+
       nAK4PUPPIJets++;
       AK4PUPPIJetPt.push_back(AK4PUPPIJets->at(i).pt());
       AK4PUPPIJetEta.push_back(AK4PUPPIJets->at(i).eta());
       AK4PUPPIJetPhi.push_back(AK4PUPPIJets->at(i).phi());
       AK4PUPPIJetE.push_back(AK4PUPPIJets->at(i).energy());
+      //cout << "PUPPI jet " << i << " pt: " << AK4PUPPIJets->at(i).correctedJet("Uncorrected").pt() << endl;
       AK4PUPPIJetRawPt.push_back(AK4PUPPIJets->at(i).correctedJet("Uncorrected").pt());
       AK4PUPPIJetRawE.push_back(AK4PUPPIJets->at(i).correctedJet("Uncorrected").energy());
       TLorentzVector myPUPPIJetTLVector;
       myPUPPIJetTLVector.SetPtEtaPhiE(AK4PUPPIJets->at(i).pt(), AK4PUPPIJets->at(i).eta(), AK4PUPPIJets->at(i).phi(), AK4PUPPIJets->at(i).energy());
       PUPPIJetsTLVector += myPUPPIJetTLVector;
       
+      TLorentzVector myJetConstituents;
+      myJetConstituents.SetPtEtaPhiE(0,0,0,0);
+      int nconst = AK4PUPPIJets->at(i).numberOfDaughters();
+      for (int j = 0; j < nconst; j++) {
+
+	TLorentzVector myJetConstituent;
+	pat::PackedCandidate * myConstituent  =  (pat::PackedCandidate*) AK4PUPPIJets->at(i).daughter(j);
+	myJetConstituent.SetPtEtaPhiE(myConstituent->pt()*myConstituent->puppiWeight(), myConstituent->eta(), myConstituent->phi(), myConstituent->energy()*myConstituent->puppiWeight());
+	myJetConstituents += myJetConstituent;
+
+      }
+
+      AK4PUPPIJetPt_fromConstituents.push_back(myJetConstituents.Pt());
+      AK4PUPPIJetEta_fromConstituents.push_back(myJetConstituents.Eta());
+      AK4PUPPIJetPhi_fromConstituents.push_back(myJetConstituents.Phi());
+      AK4PUPPIJetE_fromConstituents.push_back(myJetConstituents.E());
     }
 
   }
@@ -744,6 +767,10 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   AK4PUPPIJetE.clear();
   AK4PUPPIJetRawPt.clear();
   AK4PUPPIJetRawE.clear();
+  AK4PUPPIJetPt_fromConstituents.clear();
+  AK4PUPPIJetEta_fromConstituents.clear();
+  AK4PUPPIJetPhi_fromConstituents.clear();
+  AK4PUPPIJetE_fromConstituents.clear();
   AK4CHSJetPt.clear();
   AK4CHSJetEta.clear();
   AK4CHSJetPhi.clear();

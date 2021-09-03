@@ -2,7 +2,7 @@
 This analyzer is used to store information about PF candidates and jets in a flatTree format and preprocess it for ML tasks.
 
 ## Getting started
-The analyzer will work with CMSSW_10_6_>=17. To get started do:
+The analyzer will work with CMSSW_10_6_>=17. It's always good practice to check on the PdmV TWikis which CMSSW release is recommended for a given input miniAOD file. To get started do:
 
 ```shell
 cmsrel CMSSW_10_6_17

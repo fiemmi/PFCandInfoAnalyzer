@@ -4,7 +4,7 @@ import sys
 
 parser=argparse.ArgumentParser()
 parser.add_argument("--nlists", type=int, default=70, help="Number of output lists")
-parser.add_argument("--base_dir", type=str, default="/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/PFCandInfo/PFCandInfoAnalyzer/sorting_framework", help="Base directory")
+parser.add_argument("--base_dir", type=str, default="/afs/cern.ch/work/f/fiemmi/private/CMSSW_10_6_20/src/PFCandInfo/PFCandInfoAnalyzer/sorting_framework", help="Base directory")
 parser.add_argument("--list1", type=str, default="/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/events_EpsilonPU_EXT80k_v9-v1.txt", help="Path to 1st .txt file to open")
 parser.add_argument("--list2", type=str, default="/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/events_PU_EXT80k_v9-v1.txt", help="Path to 2nd .txt file to open")
 

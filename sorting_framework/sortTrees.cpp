@@ -14,8 +14,8 @@ using namespace std;
 
 void sortTrees (int nfile) {
   //get the block of indices of no-PU events that you want to write in the correct order. They lay in a .txt file
-  ifstream inputfile (Form("/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/sorting_framework/lists_of_indices/EXT80k_v9-v1/list_%i.txt", nfile));
-  cout << Form("/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/sorting_framework/lists_of_indices/EXT80k_v9-v1/list_%i.txt", nfile) << endl;
+  ifstream inputfile (Form("/afs/cern.ch/work/f/fiemmi/private/CMSSW_10_6_20/src/PFCandInfo/PFCandInfoAnalyzer/sorting_framework/lists_of_indices/EXT80k_v9-v1/list_%i.txt", nfile));
+  cout << Form("/afs/cern.ch/work/f/fiemmi/private/CMSSW_10_6_20/src/PFCandInfo/PFCandInfoAnalyzer/sorting_framework/lists_of_indices/EXT80k_v9-v1/list_%i.txt", nfile) << endl;
   string line;
   std::vector<int> indices;
   if (inputfile.is_open()) {
@@ -25,7 +25,7 @@ void sortTrees (int nfile) {
     inputfile.close();
     //for(int i = 0; i < indices.size(); i++) cout << indices.at(i) << endl;
 
-    TFile* fIn = new TFile ("/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_PU_EXT80k_withPUPPIalpha_v9-v1.root");
+    TFile* fIn = new TFile ("/afs/cern.ch/work/f/fiemmi/private/CMSSW_10_6_20/src/PFCandInfo/PFCandInfoAnalyzer/condor/PFCandInfoAnalyzer/files/EXT80k_v9-v1/flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_PU_EXT80k_withPUPPIalpha_v9-v1.root");
     TTree* tIn = (TTree*) fIn->Get("events");
     
     TFile* fOut = new TFile(Form("flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_PU_EXT80k_withPUPPIalpha_v9-v1_%i.root", nfile), "recreate");

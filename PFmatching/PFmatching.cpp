@@ -13,7 +13,7 @@ void PFmatching (int nfile, float a, float b) {
 
 gBenchmark->Start("running time");    
     
- TFile *inputfile  = new TFile(Form("/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/createTreePU_noPU_framework/merged_files/EXT80k_v9-v1/flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_PU+EpsilonPU_EXT80k_withPUPPIalpha_v9-v1_%i.root", nfile), "READ" );
+ TFile *inputfile  = new TFile(Form("/afs/cern.ch/work/f/fiemmi/private/CMSSW_10_6_20/src/PFCandInfo/PFCandInfoAnalyzer/createTreePU_noPU_framework/merged_files/EXT80k_v9-v1/flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_PU+EpsilonPU_EXT80k_withPUPPIalpha_v9-v1_%i.root", nfile), "READ" );
 
  int runNo, evtNo, lumiSec, nPUint, nPFCands, nPFCands_noPU, nAK4PUPPIJets, nAK4PUPPIJets_noPU, nAK4CHSJets, nAK4CHSJets_noPU, nAK4GenJets, nLeptons_PU, nGenParticles; 
  float  CHSMET, CHSUnclMET, RawCHSMET, RawCHSUnclMET, PUPPIMET, PUPPIUnclMET, RawPUPPIMET, RawPUPPIUnclMET, CHSMET_noPU, CHSUnclMET_noPU, RawCHSMET_noPU, RawCHSUnclMET_noPU, PUPPIMET_noPU, PUPPIUnclMET_noPU, RawPUPPIMET_noPU, RawPUPPIUnclMET_noPU, genMET, matchingEff;
@@ -26,7 +26,7 @@ gBenchmark->Start("running time");
  int C = A+B;
  std::string strC = to_string(C);
  TString StrC = strC;
- TFile * outputfile  = new TFile( Form("/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/PFmatching/files/EXT80k_v9-v1/flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_ABCNet_training_EXT80k_"+StrC+"_EpsilonPU_withPUPPIalpha_v9-v1_part%i.root", nfile), "RECREATE" ); 
+ TFile * outputfile  = new TFile( Form("/afs/cern.ch/work/f/fiemmi/private/CMSSW_10_6_20/src/PFCandInfo/PFCandInfoAnalyzer/PFmatching/files/EXT80k_v9-v1/flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_ABCNet_training_EXT80k_"+StrC+"_EpsilonPU_withPUPPIalpha_v9-v1_part%i.root", nfile), "RECREATE" ); 
  TTree * flatTree = new TTree( "events", "events" );
  flatTree->SetAutoSave(10000); // do not autosave tree until 10k events
 

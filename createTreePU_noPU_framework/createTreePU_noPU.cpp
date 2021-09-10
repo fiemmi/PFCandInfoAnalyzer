@@ -15,10 +15,10 @@ gBenchmark->Start("running time");
     
  TFile *inputfile_noPU  = new TFile(Form("/afs/cern.ch/work/f/fiemmi/private/CMSSW_10_6_20/src/PFCandInfo/PFCandInfoAnalyzer/sliced_noPUfiles/files/EXT80k_v9-v1/flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_EpsilonPU_EXT80k_withPUPPIalpha_v9-v1_%i.root", nfile), "READ" );
 
- TFile *inputfile_PU  = new TFile(Form("/afs/cern.ch/work/f/fiemmi/private/CMSSW_10_6_20/src/PFCandInfo/PFCandInfoAnalyzer/sorting_framework/sorted_files/flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_PU_EXT80k_withPUPPIalpha_v9-v1_%i.root", nfile), "READ" );
+ TFile *inputfile_PU  = new TFile(Form("/afs/cern.ch/work/f/fiemmi/private/CMSSW_10_6_20/src/PFCandInfo/PFCandInfoAnalyzer/sorting_framework/sorted_files/EXT80k_v9-v1/flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_PU_EXT80k_withPUPPIalpha_v9-v1_%i.root", nfile), "READ" );
 
  int runNo, evtNo, lumiSec, nPUint_PU, nPFCands_PU, nPFCands_noPU, nAK4PUPPIJets_PU, nAK4PUPPIJets_noPU, nAK4CHSJets_PU, nAK4CHSJets_noPU, nAK4GenJets_PU /*(same as noPU)*/, nGenParticles_noPU /*(same as PU)*/, nLeptons_PU;
- float CHSMET_PU, CHSUnclMET_PU, RawCHSMET_PU, RawCHSUnclMET_PU, PUPPIMET_PU, PUPPIUnclMET_PU, RawPUPPIMET_PU, RawPUPPIUnclMET_PU, CHSMET_noPU, CHSUnclMET_noPU, RawCHSMET_noPU, RawCHSUnclMET_noPU, PUPPIMET_noPU, PUPPIUnclMET_noPU, RawPUPPIMET_noPU, RawPUPPIUnclMET_noPU, genMET; 
+ float CHSMET_PU, CHSUnclMET_PU, RawCHSMET_PU, RawCHSUnclMET_PU, PUPPIMET_PU, PUPPIUnclMET_PU, RawPUPPIMET_PU, RawPUPPIUnclMET_PU, CHSMET_noPU, CHSUnclMET_noPU, RawCHSMET_noPU, RawCHSUnclMET_noPU, PUPPIMET_noPU, PUPPIUnclMET_noPU, RawPUPPIMET_noPU, RawPUPPIUnclMET_noPU, genMET, genUnclMET; 
  vector <float> PFCandPt_PU, PFCandPt_noPU, PFCandEta_PU, PFCandEta_noPU, PFCandAbsEta_PU, PFCandPhi_PU, PFCandPhi_noPU, PFCandE_PU, PFCandE_noPU, PFCandpdgId_PU, PFCandpdgId_noPU, PFCandCharge_PU, PFCandCharge_noPU, PFCandPUPPIw_PU, PFCandPUPPIw_noPU, PFCandPUPPIalpha_PU, PFCandPUPPIalpha_noPU, PFCandHCalFrac_PU, PFCandHCalFrac_noPU, PFCandHCalFracCalib_PU, PFCandHCalFracCalib_noPU, PFCandVtxAssQual_PU, PFCandVtxAssQual_noPU, PFCandFromPV_PU, PFCandFromPV_noPU, PFCandLostInnerHits_PU, PFCandLostInnerHits_noPU, PFCandTrackHighPurity_PU, PFCandTrackHighPurity_noPU, PFCandDZ_PU, PFCandDZ_noPU, PFCandDXY_PU, PFCandDXY_noPU, PFCandDZsig_PU, PFCandDZsig_noPU, PFCandDXYsig_PU, PFCandDXYsig_noPU, PFCandNormChi2_PU, PFCandNormChi2_noPU, PFCandQuality_PU, PFCandQuality_noPU, PFCandNumHits_PU, PFCandNumHits_noPU, PFCandNumLayersHit_PU, PFCandNumLayersHit_noPU, AK4PUPPIJetPt_PU, AK4PUPPIJetRawPt_PU, AK4PUPPIJetEta_PU, AK4PUPPIJetPhi_PU, AK4PUPPIJetE_PU, AK4PUPPIJetRawE_PU, AK4PUPPIJetPt_noPU, AK4PUPPIJetRawPt_noPU, AK4PUPPIJetEta_noPU, AK4PUPPIJetPhi_noPU, AK4PUPPIJetE_noPU, AK4PUPPIJetRawE_noPU, AK4CHSJetPt_PU, AK4CHSJetRawPt_PU, AK4CHSJetEta_PU, AK4CHSJetPhi_PU, AK4CHSJetE_PU, AK4CHSJetRawE_PU, AK4CHSJetPt_noPU, AK4CHSJetRawPt_noPU, AK4CHSJetEta_noPU, AK4CHSJetPhi_noPU, AK4CHSJetE_noPU, AK4CHSJetRawE_noPU, AK4GenJetPt_PU, AK4GenJetEta_PU, AK4GenJetPhi_PU, AK4GenJetE_PU, genParticlePt_noPU, genParticleEta_noPU, genParticlePhi_noPU, genParticleE_noPU, genParticleCharge_noPU, genParticlepdgId_noPU;
  vector <bool> triggerBit_PU, AK4CHSJetIsBtag_PU;
  
@@ -137,6 +137,7 @@ gBenchmark->Start("running time");
  flatTree->Branch("RawPUPPIMET_noPU", &RawPUPPIMET_noPU);
  flatTree->Branch("RawPUPPIUnclMET_noPU", &RawPUPPIUnclMET_noPU);
  flatTree->Branch("genMET", &genMET);
+ flatTree->Branch("genUnclMET", &genUnclMET);
 
 
 
@@ -307,8 +308,11 @@ gBenchmark->Start("running time");
  float myRawPUPPIUnclMET_noPU = 0;
  evt_noPU->SetBranchAddress( "RawPUPPIUnclMET", &myRawPUPPIUnclMET_noPU );
 
-  float mygenMET = 0; //take genMET from noPU sample, it is the same as in the PU sample
+ float mygenMET = 0; //take genMET from noPU sample, it is the same as in the PU sample
  evt_noPU->SetBranchAddress( "genMET", &mygenMET );
+
+ float mygenUnclMET = 0; //take genUnclMET from noPU sample, it is the same as in the PU sample
+ evt_noPU->SetBranchAddress( "genUnclMET", &mygenUnclMET );
 
  Long64_t nevents_noPU = evt_noPU->GetEntries();
 
@@ -541,6 +545,7 @@ gBenchmark->Start("running time");
 		RawPUPPIMET_noPU = myRawPUPPIMET_noPU;
 		RawPUPPIUnclMET_noPU = myRawPUPPIUnclMET_noPU;
 		genMET = mygenMET;
+		genUnclMET = mygenUnclMET;
 		triggerBit_PU = *mytriggerBit_PU;
 		AK4CHSJetIsBtag_PU = *myAK4CHSJetIsBtag_PU; 
 		

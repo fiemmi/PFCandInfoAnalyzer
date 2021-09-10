@@ -16,7 +16,7 @@ gBenchmark->Start("running time");
  TFile *inputfile  = new TFile(Form("/afs/cern.ch/work/f/fiemmi/private/CMSSW_10_6_20/src/PFCandInfo/PFCandInfoAnalyzer/createTreePU_noPU_framework/merged_files/EXT80k_v9-v1/flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_PU+EpsilonPU_EXT80k_withPUPPIalpha_v9-v1_%i.root", nfile), "READ" );
 
  int runNo, evtNo, lumiSec, nPUint, nPFCands, nPFCands_noPU, nAK4PUPPIJets, nAK4PUPPIJets_noPU, nAK4CHSJets, nAK4CHSJets_noPU, nAK4GenJets, nLeptons_PU, nGenParticles; 
- float  CHSMET, CHSUnclMET, RawCHSMET, RawCHSUnclMET, PUPPIMET, PUPPIUnclMET, RawPUPPIMET, RawPUPPIUnclMET, CHSMET_noPU, CHSUnclMET_noPU, RawCHSMET_noPU, RawCHSUnclMET_noPU, PUPPIMET_noPU, PUPPIUnclMET_noPU, RawPUPPIMET_noPU, RawPUPPIUnclMET_noPU, genMET, matchingEff;
+ float  CHSMET, CHSUnclMET, RawCHSMET, RawCHSUnclMET, PUPPIMET, PUPPIUnclMET, RawPUPPIMET, RawPUPPIUnclMET, CHSMET_noPU, CHSUnclMET_noPU, RawCHSMET_noPU, RawCHSUnclMET_noPU, PUPPIMET_noPU, PUPPIUnclMET_noPU, RawPUPPIMET_noPU, RawPUPPIUnclMET_noPU, genMET, genUnclMET, matchingEff;
  vector <float> PFCandPt, PFCandEta, PFCandAbsEta, PFCandPhi, PFCandE, PFCandPt_noPU, PFCandEta_noPU, PFCandPhi_noPU, PFCandE_noPU, PFCandpdgId, PFCandCharge, PFCandPUPPIw, PFCandPUPPIalpha, PFCandHCalFrac, PFCandHCalFracCalib, PFCandVtxAssQual, PFCandFromPV, PFCandLostInnerHits, PFCandTrackHighPurity, PFCandDZ, PFCandDXY, PFCandDZsig, PFCandDXYsig, PFCandNormChi2, PFCandQuality, PFCandNumHits, PFCandNumLayersHit, PFCandpdgId_noPU, PFCandCharge_noPU, PFCandPUPPIw_noPU, PFCandPUPPIalpha_noPU, PFCandHCalFrac_noPU, PFCandHCalFracCalib_noPU, PFCandVtxAssQual_noPU, PFCandFromPV_noPU, PFCandLostInnerHits_noPU, PFCandTrackHighPurity_noPU, PFCandDZ_noPU, PFCandDXY_noPU, PFCandDZsig_noPU, PFCandDXYsig_noPU, PFCandNormChi2_noPU, PFCandQuality_noPU, PFCandNumHits_noPU, PFCandNumLayersHit_noPU, AK4PUPPIJetPt, AK4PUPPIJetRawPt, AK4PUPPIJetEta, AK4PUPPIJetPhi, AK4PUPPIJetE, AK4PUPPIJetRawE, AK4PUPPIJetPt_noPU, AK4PUPPIJetRawPt_noPU, AK4PUPPIJetEta_noPU, AK4PUPPIJetPhi_noPU, AK4PUPPIJetE_noPU, AK4PUPPIJetRawE_noPU, AK4CHSJetPt, AK4CHSJetRawPt, AK4CHSJetEta, AK4CHSJetPhi, AK4CHSJetE, AK4CHSJetRawE, AK4CHSJetPt_noPU, AK4CHSJetRawPt_noPU, AK4CHSJetEta_noPU, AK4CHSJetPhi_noPU, AK4CHSJetE_noPU, AK4CHSJetRawE_noPU, AK4GenJetPt,  AK4GenJetEta, AK4GenJetPhi, AK4GenJetE, genParticlePt, genParticleEta, genParticlePhi, genParticleE, genParticleCharge, genParticlepdgId;
  vector<bool> triggerBit, AK4CHSJetIsBtag;
  vector <int> PFCandIsPU;
@@ -142,6 +142,7 @@ flatTree->Branch("PUPPIUnclMET_noPU", &PUPPIUnclMET_noPU);
 flatTree->Branch("RawPUPPIMET_noPU", &RawPUPPIMET_noPU);
 flatTree->Branch("RawPUPPIUnclMET_noPU", &RawPUPPIUnclMET_noPU);
 flatTree->Branch("genMET", &genMET);
+flatTree->Branch("genUnclMET", &genUnclMET);
 flatTree->Branch("matchingEff", &matchingEff);
 
 
@@ -471,6 +472,9 @@ evt->SetBranchAddress( "RawPUPPIUnclMET_noPU", &myRawPUPPIUnclMET_noPU );
 float mygenMET = 0;
 evt->SetBranchAddress( "genMET", &mygenMET );
 
+float mygenUnclMET = 0;
+evt->SetBranchAddress( "genUnclMET", &mygenUnclMET );
+
 vector<bool> *mytriggerBit_PU = 0;
 evt->SetBranchAddress( "triggerBit_PU", &mytriggerBit_PU );
 
@@ -525,6 +529,7 @@ Long64_t nevents = evt->GetEntries();
     RawPUPPIMET_noPU = myRawPUPPIMET_noPU;
     RawPUPPIUnclMET_noPU = myRawPUPPIUnclMET_noPU;
     genMET = mygenMET;
+    genUnclMET = mygenUnclMET;
     triggerBit = *mytriggerBit_PU;
     AK4CHSJetIsBtag = *myAK4CHSJetIsBtag_PU;
 

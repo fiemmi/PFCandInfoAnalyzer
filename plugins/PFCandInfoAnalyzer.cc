@@ -90,7 +90,7 @@ class PFCandInfoAnalyzer : public edm::EDAnalyzer {
   int nPFCand;
   int nGenParticles;
   int run, evt, lumi;
-  float CHSMET, CHSUnclusteredMET, RawCHSMET, RawCHSUnclusteredMET, PUPPIMET, PUPPIUnclusteredMET, RawPUPPIMET, RawPUPPIUnclusteredMET, genMET;
+  float CHSMET, CHSUnclusteredMET, RawCHSMET, RawCHSUnclusteredMET, PUPPIMET, PUPPIUnclusteredMET, RawPUPPIMET, RawPUPPIUnclusteredMET, genMET, genUnclusteredMET;
   //next line is for debugging purposes
   std::vector <float> AK4PUPPIJetPt_fromConstituents, AK4PUPPIJetEta_fromConstituents, AK4PUPPIJetPhi_fromConstituents, AK4PUPPIJetE_fromConstituents; 
   std::vector <float> PFCandPt,PFCandPx, PFCandPy, PFCandPz, PFCandEta, PFCandAbsEta, PFCandPhi, PFCandE, PFCandpdgId, PFCandCharge, PFCandPUPPIw, PFCandPUPPIalpha, PFCandHCalFrac,
@@ -248,6 +248,7 @@ PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
   outTree_->Branch("RawPUPPIMET", &RawPUPPIMET);
   outTree_->Branch("RawPUPPIUnclMET", &RawPUPPIUnclusteredMET);
   outTree_->Branch("genMET", &genMET);
+  outTree_->Branch("genUnclMET", &genUnclusteredMET);
   triggerNamesHisto_->Write();
 
 }
@@ -639,7 +640,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   }
 
   //-------------- If Monte Carlo, handle AK4 gen jets and gen particles info ---------------------------------------------------------------------------------------------------------
-
+  TLorentzVector genJetsTLVector;
   if (isMC) {
     
     Handle<reco::GenJetCollection> AK4GenJets;
@@ -665,7 +666,9 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 	AK4GenJetEta.push_back(AK4GenJets->at(i).eta());
 	AK4GenJetPhi.push_back(AK4GenJets->at(i).phi());
 	AK4GenJetE.push_back(AK4GenJets->at(i).energy());
-
+	TLorentzVector mygenJetTLVector;
+	mygenJetTLVector.SetPtEtaPhiE(AK4GenJets->at(i).pt(), AK4GenJets->at(i).eta(), AK4GenJets->at(i).phi(), AK4GenJets->at(i).energy());
+	genJetsTLVector += mygenJetTLVector;
       }
    
     }
@@ -716,6 +719,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   if (isMC) {
 
     genMET=MET->at(0).genMET()->pt();
+    genUnclusteredMET = sqrt( pow(MET->at(0).genMET()->px() + genJetsTLVector.Px(), 2) + pow(MET->at(0).genMET()->py() + genJetsTLVector.Py(), 2) );
 
   }
 

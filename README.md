@@ -54,7 +54,7 @@ condor_submit submit.sub
 9. **Split the no-PU file in subfiles**. Each of the PU files is now sorted, but the no-PU file is still a single, big file. Split it to *n* subfiles, where *n* ccomes from step 7, using `flatTree_slicer.cpp`:
 ```
 cd sliced_noPUfiles
-root -l -q flatTree_slicer.cpp(n)+
+root -l -q flatTree_slicer.cpp+(n)
 ```
 10. **Merge information from PU and no-PU events**. Now that you have the same number of PU and no-PU files and events are in the same order, merge the files into a single file by running condor jobs executing `createTreePU_noPU_framework/createTreePU_noPU.cpp`:
 ```

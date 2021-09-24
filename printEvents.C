@@ -45,7 +45,7 @@ TString fileName[1] = {
         
 for (int k = 0; k < 1; k++) {
  
-    TFile *inputfile  = new TFile( fileName[k] + ".root", "READ" );
+    TFile *inputfile  = new TFile( "/afs/cern.ch/work/f/fiemmi/private/CMSSW_10_6_20/src/PFCandInfo/PFCandInfoAnalyzer/condor/PFCandInfoAnalyzer/files/EXT80k_v9-v1/" + fileName[k] + ".root", "READ" );
     cout << "Processing file " << inputfile->GetName() << "..." << endl;
 
     //addressing branches

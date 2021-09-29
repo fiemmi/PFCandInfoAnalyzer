@@ -571,6 +571,10 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   //loop on PUPPI jets to store their Pt, Eta, Phi
 
   TLorentzVector PUPPIJetsTLVector;
+  PUPPIJetsTLVector.SetPtEtaPhiE(0,0,0,0);
+  TLorentzVector RawPUPPIJetsTLVector;
+  RawPUPPIJetsTLVector.SetPtEtaPhiE(0,0,0,0);
+  
   for (long unsigned int i = 0; i < AK4PUPPIJets->size(); i++) {
 
     if ( AK4PUPPIJets->at(i).pt() > 20 /*&& fabs(AK4PUPPIJets->at(i).eta()) < 2.4*/ ) {
@@ -580,12 +584,14 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       AK4PUPPIJetEta.push_back(AK4PUPPIJets->at(i).eta());
       AK4PUPPIJetPhi.push_back(AK4PUPPIJets->at(i).phi());
       AK4PUPPIJetE.push_back(AK4PUPPIJets->at(i).energy());
-      //cout << "PUPPI jet " << i << " pt: " << AK4PUPPIJets->at(i).correctedJet("Uncorrected").pt() << endl;
       AK4PUPPIJetRawPt.push_back(AK4PUPPIJets->at(i).correctedJet("Uncorrected").pt());
       AK4PUPPIJetRawE.push_back(AK4PUPPIJets->at(i).correctedJet("Uncorrected").energy());
       TLorentzVector myPUPPIJetTLVector;
       myPUPPIJetTLVector.SetPtEtaPhiE(AK4PUPPIJets->at(i).pt(), AK4PUPPIJets->at(i).eta(), AK4PUPPIJets->at(i).phi(), AK4PUPPIJets->at(i).energy());
       PUPPIJetsTLVector += myPUPPIJetTLVector;
+      TLorentzVector myRawPUPPIJetTLVector;
+      myRawPUPPIJetTLVector.SetPtEtaPhiE(AK4PUPPIJets->at(i).correctedJet("Uncorrected").pt(), AK4PUPPIJets->at(i).eta(), AK4PUPPIJets->at(i).phi(), AK4PUPPIJets->at(i).correctedJet("Uncorrected").energy());
+      RawPUPPIJetsTLVector += myRawPUPPIJetTLVector;
       
       TLorentzVector myJetConstituents;
       myJetConstituents.SetPtEtaPhiE(0,0,0,0);
@@ -610,6 +616,9 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   //loop on CHS jets to store their Pt, Eta, Phi
 
   TLorentzVector CHSJetsTLVector;
+  CHSJetsTLVector.SetPtEtaPhiE(0,0,0,0);
+  TLorentzVector RawCHSJetsTLVector;
+  RawCHSJetsTLVector.SetPtEtaPhiE(0,0,0,0);
   for (long unsigned int i = 0; i < AK4CHSJets->size(); i++) {
 
     if ( AK4CHSJets->at(i).pt() > 20 /*&& fabs(AK4CHSJets->at(i).eta()) < 2.4*/ ) {
@@ -634,6 +643,9 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       TLorentzVector myCHSJetTLVector;
       myCHSJetTLVector.SetPtEtaPhiE(AK4CHSJets->at(i).pt(), AK4CHSJets->at(i).eta(), AK4CHSJets->at(i).phi(), AK4CHSJets->at(i).energy());
       CHSJetsTLVector += myCHSJetTLVector;
+      TLorentzVector myRawCHSJetTLVector;
+      myRawCHSJetTLVector.SetPtEtaPhiE(AK4CHSJets->at(i).correctedJet("Uncorrected").pt(), AK4CHSJets->at(i).eta(), AK4CHSJets->at(i).phi(), AK4CHSJets->at(i).correctedJet("Uncorrected").energy());
+      RawCHSJetsTLVector += myRawCHSJetTLVector;
 
     }
    
@@ -705,7 +717,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   CHSMET = MET->at(0).pt();
   CHSUnclusteredMET = sqrt( pow(MET->at(0).px() + CHSJetsTLVector.Px(), 2) + pow(MET->at(0).py() + CHSJetsTLVector.Py(), 2) );
   RawCHSMET = MET->at(0).uncorPt();
-  RawCHSUnclusteredMET = sqrt( pow(MET->at(0).uncorPx() + CHSJetsTLVector.Px(), 2) + pow(MET->at(0).uncorPy() + CHSJetsTLVector.Py(), 2) );
+  RawCHSUnclusteredMET = sqrt( pow(MET->at(0).uncorPx() + RawCHSJetsTLVector.Px(), 2) + pow(MET->at(0).uncorPy() + RawCHSJetsTLVector.Py(), 2) );
 
   Handle<pat::METCollection> PuppiMET;
   iEvent.getByToken(PUPPIMETToken_, PuppiMET);
@@ -713,7 +725,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   PUPPIMET = PuppiMET->at(0).pt();
   PUPPIUnclusteredMET = sqrt( pow(PuppiMET->at(0).px() + PUPPIJetsTLVector.Px(), 2) + pow(PuppiMET->at(0).py() + PUPPIJetsTLVector.Py(), 2) );
   RawPUPPIMET = PuppiMET->at(0).uncorPt();
-  RawPUPPIUnclusteredMET = sqrt( pow(PuppiMET->at(0).uncorPx() + PUPPIJetsTLVector.Px(), 2) + pow(PuppiMET->at(0).uncorPy() + PUPPIJetsTLVector.Py(), 2) );
+  RawPUPPIUnclusteredMET = sqrt( pow(PuppiMET->at(0).uncorPx() + RawPUPPIJetsTLVector.Px(), 2) + pow(PuppiMET->at(0).uncorPy() + RawPUPPIJetsTLVector.Py(), 2) );
 
   //if isMC, store genMET
   if (isMC) {

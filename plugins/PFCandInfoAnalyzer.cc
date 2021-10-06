@@ -577,7 +577,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   
   for (long unsigned int i = 0; i < AK4PUPPIJets->size(); i++) {
 
-    if ( AK4PUPPIJets->at(i).pt() > 20 /*&& fabs(AK4PUPPIJets->at(i).eta()) < 2.4*/ ) {
+    if ( AK4PUPPIJets->at(i).correctedJet("Uncorrected").pt() > 20 /*&& fabs(AK4PUPPIJets->at(i).eta()) < 2.4*/ ) {
 
       nAK4PUPPIJets++;
       AK4PUPPIJetPt.push_back(AK4PUPPIJets->at(i).pt());
@@ -621,7 +621,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   RawCHSJetsTLVector.SetPtEtaPhiE(0,0,0,0);
   for (long unsigned int i = 0; i < AK4CHSJets->size(); i++) {
 
-    if ( AK4CHSJets->at(i).pt() > 20 /*&& fabs(AK4CHSJets->at(i).eta()) < 2.4*/ ) {
+    if ( AK4CHSJets->at(i).correctedJet("Uncorrected").pt() > 20 /*&& fabs(AK4CHSJets->at(i).eta()) < 2.4*/ ) {
 
       nAK4CHSJets++;
       

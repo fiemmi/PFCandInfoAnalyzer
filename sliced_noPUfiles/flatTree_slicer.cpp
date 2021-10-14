@@ -6,37 +6,50 @@
 
 using namespace std;
 
-void flatTree_slicer(int n) {
+void flatTree_slicer(int n_evts_max, int n_evts_per_file) {
 
-gROOT->Reset();
+  gROOT->Reset();
+  TFile *outputfile[n_evts_max/n_evts_per_file];
+  //Get old file, old tree and set top branch address
+  TFile *oldfile = new TFile("/eos/user/f/fiemmi/JetMET/storage/noPU_crab_files/flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_EpsilonPU_EXT1kk_withPUPPIalpha.root");
+  //TFile *oldfile = new TFile("test_file_part1.root");
+  TTree *oldtree = (TTree*)oldfile->Get("events");
+  TTree *newtree[n_evts_max/n_evts_per_file];
+  Int_t nentries = (Int_t)oldtree->GetEntries();
+ 
+  //int divide = n; //number of output files
+  int file_counter = 0;
 
-//Get old file, old tree and set top branch address
-TFile *oldfile = new TFile("../flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_EpsilonPU_EXT80k_withPUPPIalpha_v9-v1.root");
-//TFile *oldfile = new TFile("test_file_part1.root");
-TTree *oldtree = (TTree*)oldfile->Get("events");
-Int_t nentries = (Int_t)oldtree->GetEntries();
+  for (int i = 0; i < n_evts_max+1; i++){
 
-int divide = n; //number of output files
+    if (i%1000 == 0) cout << "ievent = " << i << endl;
+    
+    //Create a new file + a clone of old tree in new file
+    if (i%n_evts_per_file == 0) {
 
-for (int nfile = 0; nfile < divide; nfile++){
+      if (i > 0) {
 
-//Create a new file + a clone of old tree in new file
-std::string str_file_counter = to_string(nfile);
-TString Str_file_counter = str_file_counter;
-TFile *newfile = new TFile("files/EXT80k_v9-v1/flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_EpsilonPU_EXT80k_withPUPPIalpha_v9-v1_"+Str_file_counter+".root","recreate");
-TTree *newtree = oldtree->CloneTree(0);
+	file_counter++;
+	newtree[file_counter-1]->AutoSave();
+	delete newtree[file_counter-1];
+	outputfile[file_counter-1]->Close();
+	delete outputfile[file_counter-1];
+	cout << "Processed slice " << file_counter << endl;
+	if (i == n_evts_max) break;
 
- for (Int_t i=(nentries/divide)*nfile; i<(nentries/divide)*(1+nfile); i++) {
-   oldtree->GetEntry(i);
-   newtree->Fill();
- }
+      }
 
-newtree->AutoSave();
-delete newfile;
-cout << "Processed slice " << nfile +1 << endl;
-}
+      std::string str_file_counter = to_string(file_counter);
+      TString Str_file_counter = str_file_counter;
+      outputfile[file_counter] = new TFile("/eos/user/f/fiemmi/JetMET/storage/noPU_sliced_files/flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_EpsilonPU_EXT1kk_withPUPPIalpha_"+Str_file_counter+".root","recreate");
+      newtree[file_counter] = oldtree->CloneTree(0);
+  
+    }
 
-delete oldfile;
+    oldtree->GetEntry(i);
+    newtree[file_counter]->Fill();
+
+  }
 
 }
 

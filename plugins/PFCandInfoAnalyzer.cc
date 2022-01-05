@@ -94,9 +94,9 @@ class PFCandInfoAnalyzer : public edm::EDAnalyzer {
   int run, evt, lumi;
   float CHSMET, CHSUnclusteredMET, RawCHSMET, RawCHSUnclusteredMET, PUPPIMET, PUPPIUnclusteredMET, RawPUPPIMET, RawPUPPIUnclusteredMET, genMET, genUnclusteredMET, VBFDijetCHSMass, VBFDijetPUPPIMass, VBFDijetGenMass;
   //next line is for debugging purposes
-  std::vector <float> AK4PUPPIJetPt_fromConstituents, AK4PUPPIJetEta_fromConstituents, AK4PUPPIJetPhi_fromConstituents, AK4PUPPIJetE_fromConstituents; 
+  //std::vector <float> AK4PUPPIJetPt_fromConstituents, AK4PUPPIJetEta_fromConstituents, AK4PUPPIJetPhi_fromConstituents, AK4PUPPIJetE_fromConstituents; 
   //PF candidates
-  std::vector <float> PFCandPt,PFCandPx, PFCandPy, PFCandPz, PFCandEta, PFCandAbsEta, PFCandPhi, PFCandE, PFCandpdgId, PFCandCharge, PFCandPUPPIw, PFCandPUPPIalpha, PFCandHCalFrac,
+  std::vector <float> PFCandPt,PFCandPx, PFCandPy, PFCandPz, PFCandEta, /*PFCandAbsEta,*/ PFCandPhi, PFCandE, PFCandpdgId, PFCandCharge, PFCandPUPPIw, PFCandPUPPIalpha, PFCandHCalFrac,
   PFCandHCalFracCalib, PFCandVtxAssQual, PFCandFromPV, PFCandLostInnerHits, PFCandTrackHighPurity, PFCandDZ, PFCandDXY, PFCandDZSig, PFCandDXYSig, PFCandNormChi2, PFCandQuality, PFCandNumHits, PFCandNumPixelHits, PFCandPixelLayersWithMeasurement, PFCandStripLayersWithMeasurement, PFCandTrackerLayersWithMeasurement; 
   //AK4 jets
   std::vector <float> AK4PUPPIJetPt, AK4PUPPIJetEta, AK4PUPPIJetPhi, AK4PUPPIJetE, AK4PUPPIJetRawPt, AK4PUPPIJetRawE, AK4CHSJetPt, AK4CHSJetEta, AK4CHSJetPhi, AK4CHSJetE, AK4CHSJetRawPt, AK4CHSJetRawE, AK4GenJetPt, AK4GenJetEta, AK4GenJetPhi, AK4GenJetE;
@@ -200,7 +200,7 @@ PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
   //outTree_->Branch("PFCandPy", &PFCandPy);
   //outTree_->Branch("PFCandPz", &PFCandPz);
   outTree_->Branch("PFCandEta", &PFCandEta);
-  outTree_->Branch("PFCandAbsEta", &PFCandAbsEta);
+  //outTree_->Branch("PFCandAbsEta", &PFCandAbsEta);
   outTree_->Branch("PFCandPhi", &PFCandPhi);
   outTree_->Branch("PFCandE", &PFCandE);
   outTree_->Branch("PFCandpdgId", &PFCandpdgId);
@@ -237,10 +237,10 @@ PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
   outTree_->Branch("AK4PUPPIJetE", &AK4PUPPIJetE);
   outTree_->Branch("AK4PUPPIJetRawPt", &AK4PUPPIJetRawPt);
   outTree_->Branch("AK4PUPPIJetRawE", &AK4PUPPIJetRawE);
-  outTree_->Branch("AK4PUPPIJetPt_fromConstituents", &AK4PUPPIJetPt_fromConstituents);
-  outTree_->Branch("AK4PUPPIJetEta_fromConstituents", &AK4PUPPIJetEta_fromConstituents);
-  outTree_->Branch("AK4PUPPIJetPhi_fromConstituents", &AK4PUPPIJetPhi_fromConstituents);
-  outTree_->Branch("AK4PUPPIJetE_fromConstituents", &AK4PUPPIJetE_fromConstituents);
+  //outTree_->Branch("AK4PUPPIJetPt_fromConstituents", &AK4PUPPIJetPt_fromConstituents);
+  //outTree_->Branch("AK4PUPPIJetEta_fromConstituents", &AK4PUPPIJetEta_fromConstituents);
+  //outTree_->Branch("AK4PUPPIJetPhi_fromConstituents", &AK4PUPPIJetPhi_fromConstituents);
+  //outTree_->Branch("AK4PUPPIJetE_fromConstituents", &AK4PUPPIJetE_fromConstituents);
   outTree_->Branch("AK8PUPPIJetPt", &AK8PUPPIJetPt);
   outTree_->Branch("AK8PUPPIJetEta", &AK8PUPPIJetEta);
   outTree_->Branch("AK8PUPPIJetPhi", &AK8PUPPIJetPhi);
@@ -536,7 +536,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
     PFCandPy.push_back(PFCands->at(i).py());
     PFCandPz.push_back(PFCands->at(i).pz());
     PFCandEta.push_back(PFCands->at(i).eta());
-    PFCandAbsEta.push_back(std::abs(PFCands->at(i).eta()));
+    //PFCandAbsEta.push_back(std::abs(PFCands->at(i).eta()));
     PFCandPhi.push_back(PFCands->at(i).phi());
     PFCandE.push_back(PFCands->at(i).energy());
     PFCandpdgId.push_back(PFCands->at(i).pdgId());
@@ -622,7 +622,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       TLorentzVector myRawPUPPIJetTLVector;
       myRawPUPPIJetTLVector.SetPtEtaPhiE(AK4PUPPIJets->at(i).correctedJet("Uncorrected").pt(), AK4PUPPIJets->at(i).eta(), AK4PUPPIJets->at(i).phi(), AK4PUPPIJets->at(i).correctedJet("Uncorrected").energy());
       RawPUPPIJetsTLVector += myRawPUPPIJetTLVector;
-      
+      /*
       TLorentzVector myJetConstituents;
       myJetConstituents.SetPtEtaPhiE(0,0,0,0);
       int nconst = AK4PUPPIJets->at(i).numberOfDaughters();
@@ -639,6 +639,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       AK4PUPPIJetEta_fromConstituents.push_back(myJetConstituents.Eta());
       AK4PUPPIJetPhi_fromConstituents.push_back(myJetConstituents.Phi());
       AK4PUPPIJetE_fromConstituents.push_back(myJetConstituents.E());
+      */
     }
 
   }
@@ -860,7 +861,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   PFCandPy.clear();
   PFCandPz.clear();
   PFCandEta.clear();
-  PFCandAbsEta.clear();
+  //PFCandAbsEta.clear();
   PFCandPhi.clear();
   PFCandE.clear();
   PFCandpdgId.clear();
@@ -902,10 +903,10 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   AK8PUPPIJetE.clear();
   AK8PUPPIJetRawPt.clear();
   AK8PUPPIJetRawE.clear();
-  AK4PUPPIJetPt_fromConstituents.clear();
-  AK4PUPPIJetEta_fromConstituents.clear();
-  AK4PUPPIJetPhi_fromConstituents.clear();
-  AK4PUPPIJetE_fromConstituents.clear();
+  //AK4PUPPIJetPt_fromConstituents.clear();
+  //AK4PUPPIJetEta_fromConstituents.clear();
+  //AK4PUPPIJetPhi_fromConstituents.clear();
+  //AK4PUPPIJetE_fromConstituents.clear();
   AK4CHSJetPt.clear();
   AK4CHSJetEta.clear();
   AK4CHSJetPhi.clear();

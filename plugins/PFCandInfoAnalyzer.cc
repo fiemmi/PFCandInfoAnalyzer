@@ -90,7 +90,7 @@ class PFCandInfoAnalyzer : public edm::EDAnalyzer {
   int nPFCand;
   int nGenParticles;
   int run, evt, lumi;
-  float CHSMET, CHSUnclusteredMET, RawCHSMET, RawCHSUnclusteredMET, PUPPIMET, PUPPIUnclusteredMET, RawPUPPIMET, RawPUPPIUnclusteredMET, genMET, genUnclusteredMET;
+  float CHSMET, CHSUnclusteredMET, RawCHSMET, RawCHSUnclusteredMET, PUPPIMET, PUPPIUnclusteredMET, RawPUPPIMET, RawPUPPIUnclusteredMET, genMET, genUnclusteredMET, VBFDijetCHSMass, VBFDijetPUPPIMass, VBFDijetGenMass;
   //next line is for debugging purposes
   std::vector <float> AK4PUPPIJetPt_fromConstituents, AK4PUPPIJetEta_fromConstituents, AK4PUPPIJetPhi_fromConstituents, AK4PUPPIJetE_fromConstituents; 
   std::vector <float> PFCandPt,PFCandPx, PFCandPy, PFCandPz, PFCandEta, PFCandAbsEta, PFCandPhi, PFCandE, PFCandpdgId, PFCandCharge, PFCandPUPPIw, PFCandPUPPIalpha, PFCandHCalFrac,
@@ -249,6 +249,9 @@ PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
   outTree_->Branch("RawPUPPIUnclMET", &RawPUPPIUnclusteredMET);
   outTree_->Branch("genMET", &genMET);
   outTree_->Branch("genUnclMET", &genUnclusteredMET);
+  outTree_->Branch("VBFDijetCHSMass", &VBFDijetCHSMass);
+  outTree_->Branch("VBFDijetPUPPIMass", &VBFDijetPUPPIMass);
+  outTree_->Branch("VBFDijetGenMass", &VBFDijetGenMass);
   triggerNamesHisto_->Write();
 
 }
@@ -613,8 +616,23 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 
   }
   
-  //loop on CHS jets to store their Pt, Eta, Phi
+  // Find pair among puppi jets with large deltaEta (>3.0) and largest dijet mass
+  VBFDijetPUPPIMass = -1.;
+  for (unsigned int i=0; i<AK4PUPPIJetPt.size(); i++){
+    TLorentzVector j1;
+    j1.SetPtEtaPhiE(AK4PUPPIJetRawPt[i],AK4PUPPIJetEta[i],AK4PUPPIJetPhi[i],AK4PUPPIJetRawE[i]);
+    for (unsigned int j=i+1; j<AK4PUPPIJetPt.size(); j++){
+      TLorentzVector j2;
+      j2.SetPtEtaPhiE(AK4PUPPIJetRawPt[j],AK4PUPPIJetEta[j],AK4PUPPIJetPhi[j],AK4PUPPIJetRawE[j]);
+      if (abs(j1.Eta()-j2.Eta()) < 3.0)
+	continue;
+      TLorentzVector combined = j1+j2;
+      if (combined.M() > VBFDijetPUPPIMass)
+	VBFDijetPUPPIMass = combined.M();
+    }
+  }
 
+  //loop on CHS jets to store their Pt, Eta, Phi
   TLorentzVector CHSJetsTLVector;
   CHSJetsTLVector.SetPtEtaPhiE(0,0,0,0);
   TLorentzVector RawCHSJetsTLVector;
@@ -651,6 +669,22 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
    
   }
 
+  // Find pair among chs jets with large deltaEta (>3.0) and largest dijet mass
+  VBFDijetCHSMass = -1.;
+  for (unsigned int i=0; i<AK4CHSJetPt.size(); i++){
+    TLorentzVector j1;
+    j1.SetPtEtaPhiE(AK4CHSJetRawPt[i],AK4CHSJetEta[i],AK4CHSJetPhi[i],AK4CHSJetRawE[i]);
+    for (unsigned int j=i+1; j<AK4CHSJetPt.size(); j++){
+      TLorentzVector j2;
+      j2.SetPtEtaPhiE(AK4CHSJetRawPt[j],AK4CHSJetEta[j],AK4CHSJetPhi[j],AK4CHSJetRawE[j]);
+      if (abs(j1.Eta()-j2.Eta()) < 3.0)
+	continue;
+      TLorentzVector combined = j1+j2;
+      if (combined.M() > VBFDijetCHSMass)
+	VBFDijetCHSMass = combined.M();
+    }
+  }
+
   //-------------- If Monte Carlo, handle AK4 gen jets and gen particles info ---------------------------------------------------------------------------------------------------------
   TLorentzVector genJetsTLVector;
   if (isMC) {
@@ -683,6 +717,22 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 	genJetsTLVector += mygenJetTLVector;
       }
    
+    }
+
+    // Find pair among gen jets with large deltaEta (>3.0) and largest dijet mass
+    VBFDijetGenMass = -1.;
+    for (unsigned int i=0; i<AK4GenJetPt.size(); i++){
+      TLorentzVector j1;
+      j1.SetPtEtaPhiE(AK4GenJetPt[i],AK4GenJetEta[i],AK4GenJetPhi[i],AK4GenJetE[i]);
+      for (unsigned int j=i+1; j<AK4GenJetPt.size(); j++){
+	TLorentzVector j2;
+	j2.SetPtEtaPhiE(AK4GenJetPt[j],AK4GenJetEta[j],AK4GenJetPhi[j],AK4GenJetE[j]);
+	if (abs(j1.Eta()-j2.Eta()) < 3.0)
+	  continue;
+	TLorentzVector combined = j1+j2;
+	if (combined.M() > VBFDijetGenMass)
+	  VBFDijetGenMass = combined.M();
+      }
     }
 
     Handle<pat::PackedGenParticleCollection> GenParticles;

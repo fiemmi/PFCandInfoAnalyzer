@@ -102,13 +102,14 @@ class PFCandInfoAnalyzer : public edm::EDAnalyzer {
   std::vector <float> AK4PUPPIJetPt, AK4PUPPIJetEta, AK4PUPPIJetPhi, AK4PUPPIJetE, AK4PUPPIJetRawPt, AK4PUPPIJetRawE, AK4CHSJetPt, AK4CHSJetEta, AK4CHSJetPhi, AK4CHSJetE, AK4CHSJetRawPt, AK4CHSJetRawE, AK4GenJetPt, AK4GenJetEta, AK4GenJetPhi, AK4GenJetE;
   std::vector<int> AK4PUPPIJetHadronFlav, AK4CHSJetHadronFlav;
   //AK8 jets
-  std::vector <float> AK8PUPPIJetPt, AK8PUPPIJetEta, AK8PUPPIJetPhi, AK8PUPPIJetE, AK8PUPPIJetRawPt, AK8PUPPIJetRawE, AK8GenJetPt, AK8GenJetEta, AK8GenJetPhi, AK8GenJetE;
+  std::vector <float> AK8PUPPIJetPt, AK8PUPPIJetEta, AK8PUPPIJetPhi, AK8PUPPIJetE, AK8PUPPIJetSDMass, AK8PUPPIJetRawPt, AK8PUPPIJetRawE, AK8GenJetPt, AK8GenJetEta, AK8GenJetPhi, AK8GenJetE;
   //Gen particles
   std::vector <float> genParticlePt, genParticleEta, genParticlePhi, genParticleE, genParticlepdgId, genParticleCharge;
 
   std::vector<std::string> triggerNames_;
   std::string btaggerCSVv2_;
   std::string btaggerDeepCSV_;
+  std::string AK8PUPPIJetSDMass_;
   double DeepCSVWP_;
   TH1F* triggerNamesHisto_;
   std::vector<bool> triggerBit_;
@@ -170,6 +171,7 @@ PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
   btaggerCSVv2_ = iConfig.getParameter<std::string> ("btaggerCSVv2");
   btaggerDeepCSV_ = iConfig.getParameter<std::string> ("btaggerDeepCSV");
   DeepCSVWP_ = iConfig.getParameter<double> ("DeepCSVWP");
+  AK8PUPPIJetSDMass_ = iConfig.getParameter<std::string>("AK8PUPPIJetSDMass");
 
   //--- booking the triggerNames histogram ---------                                                                                                            
   triggerNamesHisto_ = new TH1F("TriggerNames","TriggerNames",1,0,1);
@@ -247,6 +249,7 @@ PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
   outTree_->Branch("AK8PUPPIJetEta", &AK8PUPPIJetEta);
   outTree_->Branch("AK8PUPPIJetPhi", &AK8PUPPIJetPhi);
   outTree_->Branch("AK8PUPPIJetE", &AK8PUPPIJetE);
+  outTree_->Branch("AK8PUPPIJetSDMass", &AK8PUPPIJetSDMass);
   outTree_->Branch("AK8PUPPIJetRawPt", &AK8PUPPIJetRawPt);
   outTree_->Branch("AK8PUPPIJetRawE", &AK8PUPPIJetRawE);
   outTree_->Branch("AK4CHSJetPt", &AK4CHSJetPt);
@@ -657,6 +660,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       AK8PUPPIJetEta.push_back(AK8PUPPIJets->at(i).eta());
       AK8PUPPIJetPhi.push_back(AK8PUPPIJets->at(i).phi());
       AK8PUPPIJetE.push_back(AK8PUPPIJets->at(i).energy());
+      AK8PUPPIJetSDMass.push_back(AK8PUPPIJets->at(i).userFloat(AK8PUPPIJetSDMass_));
       AK8PUPPIJetRawPt.push_back(AK8PUPPIJets->at(i).correctedJet("Uncorrected").pt());
       AK8PUPPIJetRawE.push_back(AK8PUPPIJets->at(i).correctedJet("Uncorrected").energy());
 
@@ -907,6 +911,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   AK8PUPPIJetEta.clear();
   AK8PUPPIJetPhi.clear();
   AK8PUPPIJetE.clear();
+  AK8PUPPIJetSDMass.clear();
   AK8PUPPIJetRawPt.clear();
   AK8PUPPIJetRawE.clear();
   //AK4PUPPIJetPt_fromConstituents.clear();

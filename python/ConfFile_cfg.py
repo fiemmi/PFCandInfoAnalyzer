@@ -14,10 +14,10 @@ process = cms.Process("PFCandInfo")
 # initialize MessageLogger and output report
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(80000) )
 
 isMC = True
-isminiAODv1 = False
+isminiAODv1 = True
 
 #load globaltag
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
@@ -31,13 +31,13 @@ else :
 
 process.source = cms.Source("PoolSource",
     #FLAT PU SAMPLES (mind: they are v1 miniAODs and Summer19 MC campaign!)
-    #fileNames = cms.untracked.vstring('file:root://xrootd-cms.infn.it///store/mc/RunIISummer19UL17MiniAOD/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/MINIAODSIM/FlatPU0to70_106X_mc2017_realistic_v6-v3/40000/FFEE2656-43CF-4247-8A06-8B04E8FF00F5.root'),
+    fileNames = cms.untracked.vstring('file:root://xrootd-cms.infn.it///store/mc/RunIISummer19UL17MiniAOD/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/MINIAODSIM/FlatPU0to70_106X_mc2017_realistic_v6-v3/40000/FFEE2656-43CF-4247-8A06-8B04E8FF00F5.root'),
     #fileNames = cms.untracked.vstring('file:root://xrootd-cms.infn.it///store/mc/RunIISummer19UL17MiniAOD/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/MINIAODSIM/EpsilonPU_106X_mc2017_realistic_v6-v2/100000/107F8FFF-6F20-A14D-BC89-E0C761BC300D.root'),
     #NEW miniAODv2 FILES WITH PUPPIv15 WEIGHTS
     #EpsiloPU
     #fileNames = cms.untracked.vstring('file:root://cmsxrootd.fnal.gov///store/mc/RunIISummer19UL17MiniAODv2/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/MINIAODSIM/EpsilonPU_106X_mc2017_realistic_v9-v1/00000/1A7AF728-10B7-2345-A49A-FBAB937CEADF.root', 'file:root://cmsxrootd.fnal.gov///store/mc/RunIISummer19UL17MiniAODv2/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/MINIAODSIM/EpsilonPU_106X_mc2017_realistic_v9-v1/00000/275CC5DF-0EA5-FD40-B3FB-BF2A6309A24E.root'),
     #with PU
-    fileNames = cms.untracked.vstring('file:root://cmsxrootd.fnal.gov///store/mc/RunIISummer19UL17MiniAODv2/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v1/00000/00379E19-FB20-7044-83F6-7A9E41F1BD1D.root'),
+    #fileNames = cms.untracked.vstring('file:root://cmsxrootd.fnal.gov///store/mc/RunIISummer19UL17MiniAODv2/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v1/00000/00379E19-FB20-7044-83F6-7A9E41F1BD1D.root'),
     #FILES FROM emdPickEvents
     #fileNames = cms.untracked.vstring('file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT40k/pickevents_1.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT40k/pickevents_2.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT40k/pickevents_3.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT40k/pickevents_4.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT40k/pickevents_5.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT40k/pickevents_6.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT40k/pickevents_7.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT40k/pickevents_8.root',),
     #fileNames = cms.untracked.vstring('file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_1.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_2.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_3.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_4.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_5.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_6.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_7.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_8.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_9.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_10.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_11.root',  'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_12.root',  'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_13.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_14.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_15.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_16.root', 'file:/eos/user/f/fiemmi/JetMET/ntuplize/CMSSW_10_6_16/src/pickevents_PU_files_EXT80k/pickevents_17.root',),
@@ -98,9 +98,11 @@ process.GetPFInfo = cms.EDAnalyzer('PFCandInfoAnalyzer',
                                    vertices  = cms.InputTag("offlineSlimmedPrimaryVertices"),
                                    PUinfo  = cms.InputTag("slimmedAddPileupInfo"),
                                    AK4PUPPIJets  = cms.InputTag("slimmedJetsPuppi"),
-                                   #AK4PUPPIv15Jets  = cms.InputTag("patJetsPuppi"),
                                    AK4CHSJets  = cms.InputTag("slimmedJets"),
                                    AK4GenJets = cms.InputTag("slimmedGenJets"),
+                                   AK8PUPPIJets = cms.InputTag('slimmedJetsAK8'),
+                                   AK8PUPPIJetSDMass = cms.string('ak8PFJetsPuppiSoftDropMass'),
+                                   AK8GenJets = cms.InputTag('slimmedGenJetsAK8'),
                                    genParticles = cms.InputTag('packedGenParticles'),
                                    btaggerCSVv2 = cms.string("pfCombinedInclusiveSecondaryVertexV2BJetTags"),
                                    CSVv2WP = cms.double(1.0), #not used for now
@@ -127,13 +129,13 @@ process.TFileService = cms.Service("TFileService",
                                        #fileName = cms.string('flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_ext.root')
                                        #fileName = cms.string('flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_PU_EXT.root')
                                        #fileName = cms.string('flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_EpsilonPU_EXT350k_withPUPPIalpha.root')
-                                       #fileName = cms.string('flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_EpsilonPU_EXT80k_withPUPPIalpha_miniAODv1_fixCHSbug.root')
+                                       fileName = cms.string('flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_EpsilonPU_EXT80k_withPUPPIalpha_miniAODv1_withAK8.root')
                                        #fileName = cms.string('flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_PU_EXT80k_.root')
                                        #fileName = cms.string('flatTree_TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8_fixCHSbug.root')
                                        #fileName = cms.string('flatTree_JetHT_Run2017B.root')
                                        #fileName = cms.string('flatTree_SingleMuon_Run2017B.root')
                                        #fileName = cms.string('flatTree_SingleElectron_Run2017B.root')
-                                       fileName = cms.string('file.root')
+                                       #fileName = cms.string('file.root')
                                        #TO BE USED WITH CONDOR
                                        #fileName = cms.string(options.outputFile),
                                    )

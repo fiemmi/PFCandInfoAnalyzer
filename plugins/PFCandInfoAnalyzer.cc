@@ -100,6 +100,7 @@ class PFCandInfoAnalyzer : public edm::EDAnalyzer {
   PFCandHCalFracCalib, PFCandVtxAssQual, PFCandFromPV, PFCandLostInnerHits, PFCandTrackHighPurity, PFCandDZ, PFCandDXY, PFCandDZSig, PFCandDXYSig, PFCandNormChi2, PFCandQuality, PFCandNumHits, PFCandNumPixelHits, PFCandPixelLayersWithMeasurement, PFCandStripLayersWithMeasurement, PFCandTrackerLayersWithMeasurement; 
   //AK4 jets
   std::vector <float> AK4PUPPIJetPt, AK4PUPPIJetEta, AK4PUPPIJetPhi, AK4PUPPIJetE, AK4PUPPIJetRawPt, AK4PUPPIJetRawE, AK4CHSJetPt, AK4CHSJetEta, AK4CHSJetPhi, AK4CHSJetE, AK4CHSJetRawPt, AK4CHSJetRawE, AK4GenJetPt, AK4GenJetEta, AK4GenJetPhi, AK4GenJetE;
+  std::vector<int> AK4PUPPIJetHadronFlav, AK4CHSJetHadronFlav;
   //AK8 jets
   std::vector <float> AK8PUPPIJetPt, AK8PUPPIJetEta, AK8PUPPIJetPhi, AK8PUPPIJetE, AK8PUPPIJetRawPt, AK8PUPPIJetRawE, AK8GenJetPt, AK8GenJetEta, AK8GenJetPhi, AK8GenJetE;
   //Gen particles
@@ -237,6 +238,7 @@ PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
   outTree_->Branch("AK4PUPPIJetE", &AK4PUPPIJetE);
   outTree_->Branch("AK4PUPPIJetRawPt", &AK4PUPPIJetRawPt);
   outTree_->Branch("AK4PUPPIJetRawE", &AK4PUPPIJetRawE);
+  outTree_->Branch("AK4PUPPIJetHadronFlav", &AK4PUPPIJetHadronFlav);
   //outTree_->Branch("AK4PUPPIJetPt_fromConstituents", &AK4PUPPIJetPt_fromConstituents);
   //outTree_->Branch("AK4PUPPIJetEta_fromConstituents", &AK4PUPPIJetEta_fromConstituents);
   //outTree_->Branch("AK4PUPPIJetPhi_fromConstituents", &AK4PUPPIJetPhi_fromConstituents);
@@ -254,6 +256,7 @@ PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
   outTree_->Branch("AK4CHSJetRawPt", &AK4CHSJetRawPt);
   outTree_->Branch("AK4CHSJetRawE", &AK4CHSJetRawE);
   outTree_->Branch("AK4CHSJetIsBtag", &AK4CHSJetIsBtag);
+  outTree_->Branch("AK4CHSJetHadronFlav", &AK4CHSJetHadronFlav);
   outTree_->Branch("AK4GenJetPt", &AK4GenJetPt);
   outTree_->Branch("AK4GenJetEta", &AK4GenJetEta);
   outTree_->Branch("AK4GenJetPhi", &AK4GenJetPhi);
@@ -616,6 +619,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       AK4PUPPIJetE.push_back(AK4PUPPIJets->at(i).energy());
       AK4PUPPIJetRawPt.push_back(AK4PUPPIJets->at(i).correctedJet("Uncorrected").pt());
       AK4PUPPIJetRawE.push_back(AK4PUPPIJets->at(i).correctedJet("Uncorrected").energy());
+      AK4PUPPIJetHadronFlav.push_back(AK4PUPPIJets->at(i).hadronFlavour());
       TLorentzVector myPUPPIJetTLVector;
       myPUPPIJetTLVector.SetPtEtaPhiE(AK4PUPPIJets->at(i).pt(), AK4PUPPIJets->at(i).eta(), AK4PUPPIJets->at(i).phi(), AK4PUPPIJets->at(i).energy());
       PUPPIJetsTLVector += myPUPPIJetTLVector;
@@ -702,6 +706,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       AK4CHSJetE.push_back(AK4CHSJets->at(i).energy());
       AK4CHSJetRawPt.push_back(AK4CHSJets->at(i).correctedJet("Uncorrected").pt());
       AK4CHSJetRawE.push_back(AK4CHSJets->at(i).correctedJet("Uncorrected").energy());
+      AK4CHSJetHadronFlav.push_back(AK4CHSJets->at(i).hadronFlavour());
       TLorentzVector myCHSJetTLVector;
       myCHSJetTLVector.SetPtEtaPhiE(AK4CHSJets->at(i).pt(), AK4CHSJets->at(i).eta(), AK4CHSJets->at(i).phi(), AK4CHSJets->at(i).energy());
       CHSJetsTLVector += myCHSJetTLVector;
@@ -897,6 +902,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   AK4PUPPIJetE.clear();
   AK4PUPPIJetRawPt.clear();
   AK4PUPPIJetRawE.clear();
+  AK4PUPPIJetHadronFlav.clear();
   AK8PUPPIJetPt.clear();
   AK8PUPPIJetEta.clear();
   AK8PUPPIJetPhi.clear();
@@ -914,6 +920,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   AK4CHSJetRawPt.clear();
   AK4CHSJetRawE.clear();
   AK4CHSJetIsBtag.clear();
+  AK4CHSJetHadronFlav.clear();
   AK4GenJetPt.clear();
   AK4GenJetEta.clear();
   AK4GenJetPhi.clear();

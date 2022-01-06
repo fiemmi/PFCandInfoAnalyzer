@@ -669,7 +669,7 @@ gBenchmark->Start("running time");
 		VBFDijetPUPPIMass_PU = myVBFDijetPUPPIMass_PU; 
 		VBFDijetPUPPIMass_noPU = myVBFDijetPUPPIMass_noPU;
 
-                for (int i = 0; i < mynPFCands_noPU; i++) {
+                for (unsigned int i = 0; i < mynPFCands_noPU; i++) {
                     
                     PFCandPt_noPU.push_back(myPFCandPt_noPU->at(i));
                     PFCandEta_noPU.push_back(myPFCandEta_noPU->at(i));
@@ -697,7 +697,7 @@ gBenchmark->Start("running time");
 		    
                 }
                 
-                for (int i = 0; i < mynPFCands_PU; i++) {
+                for (unsigned int i = 0; i < mynPFCands_PU; i++) {
                     
                     PFCandPt_PU.push_back(myPFCandPt_PU->at(i));
                     PFCandEta_PU.push_back(myPFCandEta_PU->at(i));
@@ -725,7 +725,7 @@ gBenchmark->Start("running time");
                     
                 }
 
-		for (int i = 0; i < mynGenParticles_noPU; i++) {
+		for (unsigned int i = 0; i < mynGenParticles_noPU; i++) {
                     
                     genParticlePt_noPU.push_back(mygenParticlePt_noPU->at(i));
                     genParticleEta_noPU.push_back(mygenParticleEta_noPU->at(i));
@@ -736,7 +736,7 @@ gBenchmark->Start("running time");
                     
                 }
                 
-                for (int i = 0; i < mynAK4PUPPIJets_PU; i++) {
+                for (unsigned int i = 0; i < mynAK4PUPPIJets_PU; i++) {
                     
                     AK4PUPPIJetPt_PU.push_back(myAK4PUPPIJetPt_PU->at(i));
 		    AK4PUPPIJetRawPt_PU.push_back(myAK4PUPPIJetRawPt_PU->at(i));
@@ -747,7 +747,7 @@ gBenchmark->Start("running time");
                     
                 }
 
-		for (int i = 0; i < mynAK4PUPPIJets_noPU; i++) {
+		for (unsigned int i = 0; i < mynAK4PUPPIJets_noPU; i++) {
                     
                     AK4PUPPIJetPt_noPU.push_back(myAK4PUPPIJetPt_noPU->at(i));
 		    AK4PUPPIJetRawPt_noPU.push_back(myAK4PUPPIJetRawPt_noPU->at(i));
@@ -758,7 +758,7 @@ gBenchmark->Start("running time");
                     
                 }
 
-		for (int i = 0; i < mynAK8PUPPIJets_PU; i++) {
+		for (unsigned int i = 0; i < mynAK8PUPPIJets_PU; i++) {
                     
                     AK8PUPPIJetPt_PU.push_back(myAK8PUPPIJetPt_PU->at(i));
 		    AK8PUPPIJetRawPt_PU.push_back(myAK8PUPPIJetRawPt_PU->at(i));
@@ -769,7 +769,7 @@ gBenchmark->Start("running time");
                     
                 }
 
-		for (int i = 0; i < mynAK8PUPPIJets_noPU; i++) {
+		for (unsigned int i = 0; i < mynAK8PUPPIJets_noPU; i++) {
                     
                     AK8PUPPIJetPt_noPU.push_back(myAK8PUPPIJetPt_noPU->at(i));
 		    AK8PUPPIJetRawPt_noPU.push_back(myAK8PUPPIJetRawPt_noPU->at(i));
@@ -780,7 +780,7 @@ gBenchmark->Start("running time");
                     
                 }
 
-		for (int i = 0; i < mynAK4CHSJets_PU; i++) {
+		for (unsigned int i = 0; i < mynAK4CHSJets_PU; i++) {
                     
                     AK4CHSJetPt_PU.push_back(myAK4CHSJetPt_PU->at(i));
 		    AK4CHSJetRawPt_PU.push_back(myAK4CHSJetRawPt_PU->at(i));
@@ -791,7 +791,7 @@ gBenchmark->Start("running time");
                     
                 }
 
-		for (int i = 0; i < mynAK4CHSJets_noPU; i++) {
+		for (unsigned int i = 0; i < mynAK4CHSJets_noPU; i++) {
                     
                     AK4CHSJetPt_noPU.push_back(myAK4CHSJetPt_noPU->at(i));
 		    AK4CHSJetRawPt_noPU.push_back(myAK4CHSJetRawPt_noPU->at(i));
@@ -802,7 +802,7 @@ gBenchmark->Start("running time");
                     
                 }
 
-		for (int i = 0; i < mynAK4GenJets_PU; i++) {
+		for (unsigned int i = 0; i < mynAK4GenJets_PU; i++) {
                     
                     AK4GenJetPt_PU.push_back(myAK4GenJetPt_PU->at(i));
                     AK4GenJetEta_PU.push_back(myAK4GenJetEta_PU->at(i));
@@ -811,7 +811,7 @@ gBenchmark->Start("running time");
                     
                 }
 
-		for (int i = 0; i < mynAK8GenJets_PU; i++) {
+		for (unsigned int i = 0; i < mynAK8GenJets_PU; i++) {
                     
                     AK8GenJetPt_PU.push_back(myAK8GenJetPt_PU->at(i));
                     AK8GenJetEta_PU.push_back(myAK8GenJetEta_PU->at(i));

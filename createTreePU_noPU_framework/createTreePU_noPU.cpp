@@ -17,9 +17,16 @@ gBenchmark->Start("running time");
 
  TFile *inputfile_PU  = new TFile(Form("/afs/cern.ch/work/f/fiemmi/private/CMSSW_10_6_20/src/PFCandInfo/PFCandInfoAnalyzer/sorting_framework/sorted_files/EXT80k_miniAODv1_fixCHSbug/flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_PU_EXT80k_withPUPPIalpha_miniAODv1_fixCHSbug_%i.root", nfile), "READ" );
 
- int runNo, evtNo, lumiSec, nPUint_PU, nPFCands_PU, nPFCands_noPU, nAK4PUPPIJets_PU, nAK4PUPPIJets_noPU, nAK4CHSJets_PU, nAK4CHSJets_noPU, nAK4GenJets_PU /*(same as noPU)*/, nGenParticles_noPU /*(same as PU)*/, nLeptons_PU;
- float CHSMET_PU, CHSUnclMET_PU, RawCHSMET_PU, RawCHSUnclMET_PU, PUPPIMET_PU, PUPPIUnclMET_PU, RawPUPPIMET_PU, RawPUPPIUnclMET_PU, CHSMET_noPU, CHSUnclMET_noPU, RawCHSMET_noPU, RawCHSUnclMET_noPU, PUPPIMET_noPU, PUPPIUnclMET_noPU, RawPUPPIMET_noPU, RawPUPPIUnclMET_noPU, genMET, genUnclMET, VBFDijetGenMass, VBFDijetGenMass_PU, VBFDijetGenMass_noPU, VBFDijetCHSMass_PU, VBFDijetCHSMass_noPU, VBFDijetPUPPIMass_PU, VBFDijetPUPPIMass_noPU; 
- vector <float> PFCandPt_PU, PFCandPt_noPU, PFCandEta_PU, PFCandEta_noPU, PFCandAbsEta_PU, PFCandPhi_PU, PFCandPhi_noPU, PFCandE_PU, PFCandE_noPU, PFCandpdgId_PU, PFCandpdgId_noPU, PFCandCharge_PU, PFCandCharge_noPU, PFCandPUPPIw_PU, PFCandPUPPIw_noPU, PFCandPUPPIalpha_PU, PFCandPUPPIalpha_noPU, PFCandHCalFrac_PU, PFCandHCalFrac_noPU, PFCandHCalFracCalib_PU, PFCandHCalFracCalib_noPU, PFCandVtxAssQual_PU, PFCandVtxAssQual_noPU, PFCandFromPV_PU, PFCandFromPV_noPU, PFCandLostInnerHits_PU, PFCandLostInnerHits_noPU, PFCandTrackHighPurity_PU, PFCandTrackHighPurity_noPU, PFCandDZ_PU, PFCandDZ_noPU, PFCandDXY_PU, PFCandDXY_noPU, PFCandDZsig_PU, PFCandDZsig_noPU, PFCandDXYsig_PU, PFCandDXYsig_noPU, PFCandNormChi2_PU, PFCandNormChi2_noPU, PFCandQuality_PU, PFCandQuality_noPU, PFCandNumHits_PU, PFCandNumHits_noPU, PFCandNumLayersHit_PU, PFCandNumLayersHit_noPU, AK4PUPPIJetPt_PU, AK4PUPPIJetRawPt_PU, AK4PUPPIJetEta_PU, AK4PUPPIJetPhi_PU, AK4PUPPIJetE_PU, AK4PUPPIJetRawE_PU, AK4PUPPIJetPt_noPU, AK4PUPPIJetRawPt_noPU, AK4PUPPIJetEta_noPU, AK4PUPPIJetPhi_noPU, AK4PUPPIJetE_noPU, AK4PUPPIJetRawE_noPU, AK4CHSJetPt_PU, AK4CHSJetRawPt_PU, AK4CHSJetEta_PU, AK4CHSJetPhi_PU, AK4CHSJetE_PU, AK4CHSJetRawE_PU, AK4CHSJetPt_noPU, AK4CHSJetRawPt_noPU, AK4CHSJetEta_noPU, AK4CHSJetPhi_noPU, AK4CHSJetE_noPU, AK4CHSJetRawE_noPU, AK4GenJetPt_PU, AK4GenJetEta_PU, AK4GenJetPhi_PU, AK4GenJetE_PU, genParticlePt_noPU, genParticleEta_noPU, genParticlePhi_noPU, genParticleE_noPU, genParticleCharge_noPU, genParticlepdgId_noPU;
+ int runNo, evtNo, lumiSec, nPUint_PU, nPFCands_PU, nPFCands_noPU, nAK4PUPPIJets_PU, nAK4PUPPIJets_noPU, nAK8PUPPIJets_PU, nAK8PUPPIJets_noPU, nAK4CHSJets_PU, nAK4CHSJets_noPU, nAK4GenJets_PU /*(same as noPU)*/, nAK8GenJets_PU /*(same as noPU)*/, nGenParticles_noPU /*(same as PU)*/, nLeptons_PU;
+ float CHSMET_PU, CHSUnclMET_PU, RawCHSMET_PU, RawCHSUnclMET_PU, PUPPIMET_PU, PUPPIUnclMET_PU, RawPUPPIMET_PU, RawPUPPIUnclMET_PU, CHSMET_noPU, CHSUnclMET_noPU, RawCHSMET_noPU, RawCHSUnclMET_noPU, PUPPIMET_noPU, PUPPIUnclMET_noPU, RawPUPPIMET_noPU, RawPUPPIUnclMET_noPU, genMET, genUnclMET, VBFDijetGenMass, VBFDijetGenMass_PU, VBFDijetGenMass_noPU, VBFDijetCHSMass_PU, VBFDijetCHSMass_noPU, VBFDijetPUPPIMass_PU, VBFDijetPUPPIMass_noPU;
+ //PF candidates
+ vector <float> PFCandPt_PU, PFCandPt_noPU, PFCandEta_PU, PFCandEta_noPU, PFCandAbsEta_PU, PFCandPhi_PU, PFCandPhi_noPU, PFCandE_PU, PFCandE_noPU, PFCandpdgId_PU, PFCandpdgId_noPU, PFCandCharge_PU, PFCandCharge_noPU, PFCandPUPPIw_PU, PFCandPUPPIw_noPU, PFCandPUPPIalpha_PU, PFCandPUPPIalpha_noPU, PFCandHCalFrac_PU, PFCandHCalFrac_noPU, PFCandHCalFracCalib_PU, PFCandHCalFracCalib_noPU, PFCandVtxAssQual_PU, PFCandVtxAssQual_noPU, PFCandFromPV_PU, PFCandFromPV_noPU, PFCandLostInnerHits_PU, PFCandLostInnerHits_noPU, PFCandTrackHighPurity_PU, PFCandTrackHighPurity_noPU, PFCandDZ_PU, PFCandDZ_noPU, PFCandDXY_PU, PFCandDXY_noPU, PFCandDZsig_PU, PFCandDZsig_noPU, PFCandDXYsig_PU, PFCandDXYsig_noPU, PFCandNormChi2_PU, PFCandNormChi2_noPU, PFCandQuality_PU, PFCandQuality_noPU, PFCandNumHits_PU, PFCandNumHits_noPU, PFCandNumLayersHit_PU, PFCandNumLayersHit_noPU;
+ //AK4 jets
+ vector <float> AK4PUPPIJetPt_PU, AK4PUPPIJetRawPt_PU, AK4PUPPIJetEta_PU, AK4PUPPIJetPhi_PU, AK4PUPPIJetE_PU, AK4PUPPIJetRawE_PU, AK4PUPPIJetPt_noPU, AK4PUPPIJetRawPt_noPU, AK4PUPPIJetEta_noPU, AK4PUPPIJetPhi_noPU, AK4PUPPIJetE_noPU, AK4PUPPIJetRawE_noPU, AK4CHSJetPt_PU, AK4CHSJetRawPt_PU, AK4CHSJetEta_PU, AK4CHSJetPhi_PU, AK4CHSJetE_PU, AK4CHSJetRawE_PU, AK4CHSJetPt_noPU, AK4CHSJetRawPt_noPU, AK4CHSJetEta_noPU, AK4CHSJetPhi_noPU, AK4CHSJetE_noPU, AK4CHSJetRawE_noPU, AK4GenJetPt_PU, AK4GenJetEta_PU, AK4GenJetPhi_PU, AK4GenJetE_PU;
+ //AK8 jets
+ vector <float> AK8PUPPIJetPt_PU, AK8PUPPIJetRawPt_PU, AK8PUPPIJetEta_PU, AK8PUPPIJetPhi_PU, AK8PUPPIJetE_PU, AK8PUPPIJetRawE_PU, AK8PUPPIJetPt_noPU, AK8PUPPIJetRawPt_noPU, AK8PUPPIJetEta_noPU, AK8PUPPIJetPhi_noPU, AK8PUPPIJetE_noPU, AK8PUPPIJetRawE_noPU, AK8GenJetPt_PU, AK8GenJetEta_PU, AK8GenJetPhi_PU, AK8GenJetE_PU;
+ //Gen particles
+ vector <float> genParticlePt_noPU, genParticleEta_noPU, genParticlePhi_noPU, genParticleE_noPU, genParticleCharge_noPU, genParticlepdgId_noPU;
  vector <bool> triggerBit_PU, AK4CHSJetIsBtag_PU;
  
  TFile * outputfile  = new TFile( Form("flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_PU+EpsilonPU_EXT80k_withPUPPIalpha_miniAODv1_fixCHSbug_%i.root", nfile), "RECREATE" );
@@ -93,6 +100,20 @@ gBenchmark->Start("running time");
  flatTree->Branch("AK4PUPPIJetPhi_noPU", &AK4PUPPIJetPhi_noPU);
  flatTree->Branch("AK4PUPPIJetE_noPU", &AK4PUPPIJetE_noPU);
  flatTree->Branch("AK4PUPPIJetRawE_noPU", &AK4PUPPIJetRawE_noPU);
+ flatTree->Branch("nAK8PUPPIJets_PU", &nAK8PUPPIJets_PU);
+ flatTree->Branch("AK8PUPPIJetPt_PU", &AK8PUPPIJetPt_PU);
+ flatTree->Branch("AK8PUPPIJetRawPt_PU", &AK8PUPPIJetRawPt_PU);
+ flatTree->Branch("AK8PUPPIJetEta_PU", &AK8PUPPIJetEta_PU);
+ flatTree->Branch("AK8PUPPIJetPhi_PU", &AK8PUPPIJetPhi_PU);
+ flatTree->Branch("AK8PUPPIJetE_PU", &AK8PUPPIJetE_PU);
+ flatTree->Branch("AK8PUPPIJetRawE_PU", &AK8PUPPIJetRawE_PU);
+ flatTree->Branch("nAK8PUPPIJets_noPU", &nAK8PUPPIJets_noPU);
+ flatTree->Branch("AK8PUPPIJetPt_noPU", &AK8PUPPIJetPt_noPU);
+ flatTree->Branch("AK8PUPPIJetRawPt_noPU", &AK8PUPPIJetRawPt_noPU);
+ flatTree->Branch("AK8PUPPIJetEta_noPU", &AK8PUPPIJetEta_noPU);
+ flatTree->Branch("AK8PUPPIJetPhi_noPU", &AK8PUPPIJetPhi_noPU);
+ flatTree->Branch("AK8PUPPIJetE_noPU", &AK8PUPPIJetE_noPU);
+ flatTree->Branch("AK8PUPPIJetRawE_noPU", &AK8PUPPIJetRawE_noPU);
  flatTree->Branch("nAK4CHSJets_PU", &nAK4CHSJets_PU);
  flatTree->Branch("AK4CHSJetPt_PU", &AK4CHSJetPt_PU);
  flatTree->Branch("AK4CHSJetRawPt_PU", &AK4CHSJetRawPt_PU);
@@ -113,6 +134,11 @@ gBenchmark->Start("running time");
  flatTree->Branch("AK4GenJetEta_PU", &AK4GenJetEta_PU);
  flatTree->Branch("AK4GenJetPhi_PU", &AK4GenJetPhi_PU);
  flatTree->Branch("AK4GenJetE_PU", &AK4GenJetE_PU);
+ flatTree->Branch("nAK8GenJets_PU", &nAK8GenJets_PU);
+ flatTree->Branch("AK8GenJetPt_PU", &AK8GenJetPt_PU);
+ flatTree->Branch("AK8GenJetEta_PU", &AK8GenJetEta_PU);
+ flatTree->Branch("AK8GenJetPhi_PU", &AK8GenJetPhi_PU);
+ flatTree->Branch("AK8GenJetE_PU", &AK8GenJetE_PU);
  flatTree->Branch("nGenParticles_noPU", &nGenParticles_noPU, "nGenParticles_noPU/I");
  flatTree->Branch("genParticlePt_noPU", &genParticlePt_noPU);
  flatTree->Branch("genParticleEta_noPU", &genParticleEta_noPU);
@@ -247,6 +273,27 @@ gBenchmark->Start("running time");
 
  vector<float> *myAK4PUPPIJetRawE_noPU = 0;
  evt_noPU->SetBranchAddress( "AK4PUPPIJetRawE", &myAK4PUPPIJetRawE_noPU );
+
+ UInt_t mynAK8PUPPIJets_noPU = 0;
+ evt_noPU->SetBranchAddress( "nAK8PUPPIJets", &mynAK8PUPPIJets_noPU );
+
+ vector<float> *myAK8PUPPIJetPt_noPU = 0;
+ evt_noPU->SetBranchAddress( "AK8PUPPIJetPt", &myAK8PUPPIJetPt_noPU );
+
+ vector<float> *myAK8PUPPIJetRawPt_noPU = 0;
+ evt_noPU->SetBranchAddress( "AK8PUPPIJetRawPt", &myAK8PUPPIJetRawPt_noPU );
+
+ vector<float> *myAK8PUPPIJetEta_noPU = 0;
+ evt_noPU->SetBranchAddress( "AK8PUPPIJetEta", &myAK8PUPPIJetEta_noPU );
+
+ vector<float> *myAK8PUPPIJetPhi_noPU = 0;
+ evt_noPU->SetBranchAddress( "AK8PUPPIJetPhi", &myAK8PUPPIJetPhi_noPU );
+
+ vector<float> *myAK8PUPPIJetE_noPU = 0;
+ evt_noPU->SetBranchAddress( "AK8PUPPIJetE", &myAK8PUPPIJetE_noPU );
+
+ vector<float> *myAK8PUPPIJetRawE_noPU = 0;
+ evt_noPU->SetBranchAddress( "AK8PUPPIJetRawE", &myAK8PUPPIJetRawE_noPU );
 
  UInt_t mynAK4CHSJets_noPU = 0;
  evt_noPU->SetBranchAddress( "nAK4CHSJets", &mynAK4CHSJets_noPU );
@@ -448,6 +495,27 @@ gBenchmark->Start("running time");
  vector<float> *myAK4PUPPIJetRawE_PU = 0;
  evt_PU->SetBranchAddress( "AK4PUPPIJetRawE", &myAK4PUPPIJetRawE_PU );
 
+  UInt_t mynAK8PUPPIJets_PU = 0;
+ evt_PU->SetBranchAddress( "nAK8PUPPIJets", &mynAK8PUPPIJets_PU );
+
+ vector<float> *myAK8PUPPIJetPt_PU = 0;
+ evt_PU->SetBranchAddress( "AK8PUPPIJetPt", &myAK8PUPPIJetPt_PU );
+
+ vector<float> *myAK8PUPPIJetRawPt_PU = 0;
+ evt_PU->SetBranchAddress( "AK8PUPPIJetRawPt", &myAK8PUPPIJetRawPt_PU );
+
+ vector<float> *myAK8PUPPIJetEta_PU = 0;
+ evt_PU->SetBranchAddress( "AK8PUPPIJetEta", &myAK8PUPPIJetEta_PU );
+
+ vector<float> *myAK8PUPPIJetPhi_PU = 0;
+ evt_PU->SetBranchAddress( "AK8PUPPIJetPhi", &myAK8PUPPIJetPhi_PU );
+
+ vector<float> *myAK8PUPPIJetE_PU = 0;
+ evt_PU->SetBranchAddress( "AK8PUPPIJetE", &myAK8PUPPIJetE_PU );
+
+ vector<float> *myAK8PUPPIJetRawE_PU = 0;
+ evt_PU->SetBranchAddress( "AK8PUPPIJetRawE", &myAK8PUPPIJetRawE_PU );
+
  UInt_t mynAK4CHSJets_PU = 0;
  evt_PU->SetBranchAddress( "nAK4CHSJets", &mynAK4CHSJets_PU );
 
@@ -483,6 +551,21 @@ gBenchmark->Start("running time");
 
  vector<float> *myAK4GenJetE_PU = 0;
  evt_PU->SetBranchAddress( "AK4GenJetE", &myAK4GenJetE_PU );
+
+ UInt_t mynAK8GenJets_PU = 0;
+ evt_PU->SetBranchAddress( "nAK8GenJets", &mynAK8GenJets_PU );
+
+ vector<float> *myAK8GenJetPt_PU = 0;
+ evt_PU->SetBranchAddress( "AK8GenJetPt", &myAK8GenJetPt_PU );
+
+ vector<float> *myAK8GenJetEta_PU = 0;
+ evt_PU->SetBranchAddress( "AK8GenJetEta", &myAK8GenJetEta_PU );
+
+ vector<float> *myAK8GenJetPhi_PU = 0;
+ evt_PU->SetBranchAddress( "AK8GenJetPhi", &myAK8GenJetPhi_PU );
+
+ vector<float> *myAK8GenJetE_PU = 0;
+ evt_PU->SetBranchAddress( "AK8GenJetE", &myAK8GenJetE_PU );
 
  float myCHSMET_PU = 0;
  evt_PU->SetBranchAddress( "CHSMET", &myCHSMET_PU );
@@ -551,9 +634,12 @@ gBenchmark->Start("running time");
                 nPFCands_PU = mynPFCands_PU;
                 nAK4PUPPIJets_PU = mynAK4PUPPIJets_PU;
 		nAK4PUPPIJets_noPU = mynAK4PUPPIJets_noPU;
+		nAK8PUPPIJets_PU = mynAK8PUPPIJets_PU;
+		nAK8PUPPIJets_noPU = mynAK8PUPPIJets_noPU;
 		nAK4CHSJets_PU = mynAK4CHSJets_PU;
 		nAK4CHSJets_noPU = mynAK4CHSJets_noPU;
 		nAK4GenJets_PU = mynAK4GenJets_PU;
+		nAK8GenJets_PU = mynAK8GenJets_PU;
 		nGenParticles_noPU = mynGenParticles_noPU;
 		CHSMET_PU = myCHSMET_PU;
 		CHSUnclMET_PU = myCHSUnclMET_PU;
@@ -672,6 +758,28 @@ gBenchmark->Start("running time");
                     
                 }
 
+		for (int i = 0; i < mynAK8PUPPIJets_PU; i++) {
+                    
+                    AK8PUPPIJetPt_PU.push_back(myAK8PUPPIJetPt_PU->at(i));
+		    AK8PUPPIJetRawPt_PU.push_back(myAK8PUPPIJetRawPt_PU->at(i));
+                    AK8PUPPIJetEta_PU.push_back(myAK8PUPPIJetEta_PU->at(i));
+                    AK8PUPPIJetPhi_PU.push_back(myAK8PUPPIJetPhi_PU->at(i));
+                    AK8PUPPIJetE_PU.push_back(myAK8PUPPIJetE_PU->at(i));
+		    AK8PUPPIJetRawE_PU.push_back(myAK8PUPPIJetRawE_PU->at(i));
+                    
+                }
+
+		for (int i = 0; i < mynAK8PUPPIJets_noPU; i++) {
+                    
+                    AK8PUPPIJetPt_noPU.push_back(myAK8PUPPIJetPt_noPU->at(i));
+		    AK8PUPPIJetRawPt_noPU.push_back(myAK8PUPPIJetRawPt_noPU->at(i));
+                    AK8PUPPIJetEta_noPU.push_back(myAK8PUPPIJetEta_noPU->at(i));
+                    AK8PUPPIJetPhi_noPU.push_back(myAK8PUPPIJetPhi_noPU->at(i));
+                    AK8PUPPIJetE_noPU.push_back(myAK8PUPPIJetE_noPU->at(i));
+		    AK8PUPPIJetRawE_noPU.push_back(myAK8PUPPIJetRawE_noPU->at(i));
+                    
+                }
+
 		for (int i = 0; i < mynAK4CHSJets_PU; i++) {
                     
                     AK4CHSJetPt_PU.push_back(myAK4CHSJetPt_PU->at(i));
@@ -700,6 +808,15 @@ gBenchmark->Start("running time");
                     AK4GenJetEta_PU.push_back(myAK4GenJetEta_PU->at(i));
                     AK4GenJetPhi_PU.push_back(myAK4GenJetPhi_PU->at(i));
 		    AK4GenJetE_PU.push_back(myAK4GenJetE_PU->at(i));
+                    
+                }
+
+		for (int i = 0; i < mynAK8GenJets_PU; i++) {
+                    
+                    AK8GenJetPt_PU.push_back(myAK8GenJetPt_PU->at(i));
+                    AK8GenJetEta_PU.push_back(myAK8GenJetEta_PU->at(i));
+                    AK8GenJetPhi_PU.push_back(myAK8GenJetPhi_PU->at(i));
+		    AK8GenJetE_PU.push_back(myAK8GenJetE_PU->at(i));
                     
                 }
                 
@@ -763,6 +880,18 @@ gBenchmark->Start("running time");
             AK4PUPPIJetPhi_noPU.clear();
             AK4PUPPIJetE_noPU.clear();
 	    AK4PUPPIJetRawE_noPU.clear();
+	    AK8PUPPIJetPt_PU.clear();
+	    AK8PUPPIJetRawPt_PU.clear();
+            AK8PUPPIJetEta_PU.clear();
+            AK8PUPPIJetPhi_PU.clear();
+            AK8PUPPIJetE_PU.clear();
+	    AK8PUPPIJetRawE_PU.clear();
+	    AK8PUPPIJetPt_noPU.clear();
+	    AK8PUPPIJetRawPt_noPU.clear();
+            AK8PUPPIJetEta_noPU.clear();
+            AK8PUPPIJetPhi_noPU.clear();
+            AK8PUPPIJetE_noPU.clear();
+	    AK8PUPPIJetRawE_noPU.clear();
 	    AK4CHSJetPt_PU.clear();
 	    AK4CHSJetRawPt_PU.clear();
             AK4CHSJetEta_PU.clear();
@@ -779,6 +908,10 @@ gBenchmark->Start("running time");
             AK4GenJetEta_PU.clear();
             AK4GenJetPhi_PU.clear();
 	    AK4GenJetE_PU.clear();
+	    AK8GenJetPt_PU.clear();
+            AK8GenJetEta_PU.clear();
+            AK8GenJetPhi_PU.clear();
+	    AK8GenJetE_PU.clear();
 	    genParticlePt_noPU.clear();
             genParticleEta_noPU.clear();
             genParticlePhi_noPU.clear();
@@ -788,7 +921,6 @@ gBenchmark->Start("running time");
 	    triggerBit_PU.clear();
 	    AK4CHSJetIsBtag_PU.clear();
         
-
     }
     
 flatTree->Write();

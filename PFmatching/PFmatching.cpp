@@ -15,9 +15,16 @@ gBenchmark->Start("running time");
     
  TFile *inputfile  = new TFile(Form("/afs/cern.ch/work/f/fiemmi/private/CMSSW_10_6_20/src/PFCandInfo/PFCandInfoAnalyzer/createTreePU_noPU_framework/merged_files/EXT80k_miniAODv1_fixCHSbug/flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_PU+EpsilonPU_EXT80k_withPUPPIalpha_miniAODv1_fixCHSbug_%i.root", nfile), "READ" );
 
- int runNo, evtNo, lumiSec, nPUint, nPFCands, nPFCands_noPU, nAK4PUPPIJets, nAK4PUPPIJets_noPU, nAK4CHSJets, nAK4CHSJets_noPU, nAK4GenJets, nLeptons_PU, nGenParticles; 
+ int runNo, evtNo, lumiSec, nPUint, nPFCands, nPFCands_noPU, nAK4PUPPIJets, nAK4PUPPIJets_noPU, nAK8PUPPIJets, nAK8PUPPIJets_noPU, nAK4CHSJets, nAK4CHSJets_noPU, nAK4GenJets, nAK8GenJets, nLeptons_PU, nGenParticles; 
  float  CHSMET, CHSUnclMET, RawCHSMET, RawCHSUnclMET, PUPPIMET, PUPPIUnclMET, RawPUPPIMET, RawPUPPIUnclMET, CHSMET_noPU, CHSUnclMET_noPU, RawCHSMET_noPU, RawCHSUnclMET_noPU, PUPPIMET_noPU, PUPPIUnclMET_noPU, RawPUPPIMET_noPU, RawPUPPIUnclMET_noPU, genMET, genUnclMET, matchingEff, VBFDijetPUPPIMass_noPU, VBFDijetPUPPIMass_PU, VBFDijetCHSMass_noPU, VBFDijetCHSMass_PU, VBFDijetGenMass;
- vector <float> PFCandPt, PFCandEta, PFCandAbsEta, PFCandPhi, PFCandE, PFCandPt_noPU, PFCandEta_noPU, PFCandPhi_noPU, PFCandE_noPU, PFCandpdgId, PFCandCharge, PFCandPUPPIw, PFCandPUPPIalpha, PFCandHCalFrac, PFCandHCalFracCalib, PFCandVtxAssQual, PFCandFromPV, PFCandLostInnerHits, PFCandTrackHighPurity, PFCandDZ, PFCandDXY, PFCandDZsig, PFCandDXYsig, PFCandNormChi2, PFCandQuality, PFCandNumHits, PFCandNumLayersHit, PFCandpdgId_noPU, PFCandCharge_noPU, PFCandPUPPIw_noPU, PFCandPUPPIalpha_noPU, PFCandHCalFrac_noPU, PFCandHCalFracCalib_noPU, PFCandVtxAssQual_noPU, PFCandFromPV_noPU, PFCandLostInnerHits_noPU, PFCandTrackHighPurity_noPU, PFCandDZ_noPU, PFCandDXY_noPU, PFCandDZsig_noPU, PFCandDXYsig_noPU, PFCandNormChi2_noPU, PFCandQuality_noPU, PFCandNumHits_noPU, PFCandNumLayersHit_noPU, AK4PUPPIJetPt, AK4PUPPIJetRawPt, AK4PUPPIJetEta, AK4PUPPIJetPhi, AK4PUPPIJetE, AK4PUPPIJetRawE, AK4PUPPIJetPt_noPU, AK4PUPPIJetRawPt_noPU, AK4PUPPIJetEta_noPU, AK4PUPPIJetPhi_noPU, AK4PUPPIJetE_noPU, AK4PUPPIJetRawE_noPU, AK4CHSJetPt, AK4CHSJetRawPt, AK4CHSJetEta, AK4CHSJetPhi, AK4CHSJetE, AK4CHSJetRawE, AK4CHSJetPt_noPU, AK4CHSJetRawPt_noPU, AK4CHSJetEta_noPU, AK4CHSJetPhi_noPU, AK4CHSJetE_noPU, AK4CHSJetRawE_noPU, AK4GenJetPt,  AK4GenJetEta, AK4GenJetPhi, AK4GenJetE, genParticlePt, genParticleEta, genParticlePhi, genParticleE, genParticleCharge, genParticlepdgId;
+ //PF candidates
+ vector <float> PFCandPt, PFCandEta, PFCandAbsEta, PFCandPhi, PFCandE, PFCandPt_noPU, PFCandEta_noPU, PFCandPhi_noPU, PFCandE_noPU, PFCandpdgId, PFCandCharge, PFCandPUPPIw, PFCandPUPPIalpha, PFCandHCalFrac, PFCandHCalFracCalib, PFCandVtxAssQual, PFCandFromPV, PFCandLostInnerHits, PFCandTrackHighPurity, PFCandDZ, PFCandDXY, PFCandDZsig, PFCandDXYsig, PFCandNormChi2, PFCandQuality, PFCandNumHits, PFCandNumLayersHit, PFCandpdgId_noPU, PFCandCharge_noPU, PFCandPUPPIw_noPU, PFCandPUPPIalpha_noPU, PFCandHCalFrac_noPU, PFCandHCalFracCalib_noPU, PFCandVtxAssQual_noPU, PFCandFromPV_noPU, PFCandLostInnerHits_noPU, PFCandTrackHighPurity_noPU, PFCandDZ_noPU, PFCandDXY_noPU, PFCandDZsig_noPU, PFCandDXYsig_noPU, PFCandNormChi2_noPU, PFCandQuality_noPU, PFCandNumHits_noPU, PFCandNumLayersHit_noPU;
+ //AK4 jets
+ vector <float> AK4PUPPIJetPt, AK4PUPPIJetRawPt, AK4PUPPIJetEta, AK4PUPPIJetPhi, AK4PUPPIJetE, AK4PUPPIJetRawE, AK4PUPPIJetPt_noPU, AK4PUPPIJetRawPt_noPU, AK4PUPPIJetEta_noPU, AK4PUPPIJetPhi_noPU, AK4PUPPIJetE_noPU, AK4PUPPIJetRawE_noPU, AK4CHSJetPt, AK4CHSJetRawPt, AK4CHSJetEta, AK4CHSJetPhi, AK4CHSJetE, AK4CHSJetRawE, AK4CHSJetPt_noPU, AK4CHSJetRawPt_noPU, AK4CHSJetEta_noPU, AK4CHSJetPhi_noPU, AK4CHSJetE_noPU, AK4CHSJetRawE_noPU, AK4GenJetPt, AK4GenJetEta, AK4GenJetPhi, AK4GenJetE;
+ //AK8 jets
+ vector <float> AK8PUPPIJetPt, AK8PUPPIJetRawPt, AK8PUPPIJetEta, AK8PUPPIJetPhi, AK8PUPPIJetE, AK8PUPPIJetRawE, AK8PUPPIJetPt_noPU, AK8PUPPIJetRawPt_noPU, AK8PUPPIJetEta_noPU, AK8PUPPIJetPhi_noPU, AK8PUPPIJetE_noPU, AK8PUPPIJetRawE_noPU, AK8GenJetPt, AK8GenJetEta, AK8GenJetPhi, AK8GenJetE;
+ //Gen particles
+ vector <float> genParticlePt, genParticleEta, genParticlePhi, genParticleE, genParticleCharge, genParticlepdgId;
  vector<bool> triggerBit, AK4CHSJetIsBtag;
  vector <int> PFCandIsPU;
  
@@ -98,6 +105,20 @@ flatTree->Branch("AK4PUPPIJetEta_noPU", &AK4PUPPIJetEta_noPU);
 flatTree->Branch("AK4PUPPIJetPhi_noPU", &AK4PUPPIJetPhi_noPU);
 flatTree->Branch("AK4PUPPIJetE_noPU", &AK4PUPPIJetE_noPU);
 flatTree->Branch("AK4PUPPIJetRawE_noPU", &AK4PUPPIJetRawE_noPU);
+flatTree->Branch("nAK8PUPPIJets", &nAK8PUPPIJets);
+flatTree->Branch("AK8PUPPIJetPt", &AK8PUPPIJetPt);
+flatTree->Branch("AK8PUPPIJetRawPt", &AK8PUPPIJetRawPt);
+flatTree->Branch("AK8PUPPIJetEta", &AK8PUPPIJetEta);
+flatTree->Branch("AK8PUPPIJetPhi", &AK8PUPPIJetPhi);
+flatTree->Branch("AK8PUPPIJetE", &AK8PUPPIJetE);
+flatTree->Branch("AK8PUPPIJetRawE", &AK8PUPPIJetRawE);
+flatTree->Branch("nAK8PUPPIJets_noPU", &nAK8PUPPIJets_noPU);
+flatTree->Branch("AK8PUPPIJetPt_noPU", &AK8PUPPIJetPt_noPU);
+flatTree->Branch("AK8PUPPIJetRawPt_noPU", &AK8PUPPIJetRawPt_noPU);
+flatTree->Branch("AK8PUPPIJetEta_noPU", &AK8PUPPIJetEta_noPU);
+flatTree->Branch("AK8PUPPIJetPhi_noPU", &AK8PUPPIJetPhi_noPU);
+flatTree->Branch("AK8PUPPIJetE_noPU", &AK8PUPPIJetE_noPU);
+flatTree->Branch("AK8PUPPIJetRawE_noPU", &AK8PUPPIJetRawE_noPU);
 flatTree->Branch("nAK4CHSJets", &nAK4CHSJets);
 flatTree->Branch("AK4CHSJetPt", &AK4CHSJetPt);
 flatTree->Branch("AK4CHSJetRawPt", &AK4CHSJetRawPt);
@@ -118,6 +139,11 @@ flatTree->Branch("AK4GenJetPt", &AK4GenJetPt);
 flatTree->Branch("AK4GenJetEta", &AK4GenJetEta);
 flatTree->Branch("AK4GenJetPhi", &AK4GenJetPhi);
 flatTree->Branch("AK4GenJetE", &AK4GenJetE);
+flatTree->Branch("nAK8GenJets", &nAK8GenJets);
+flatTree->Branch("AK8GenJetPt", &AK8GenJetPt);
+flatTree->Branch("AK8GenJetEta", &AK8GenJetEta);
+flatTree->Branch("AK8GenJetPhi", &AK8GenJetPhi);
+flatTree->Branch("AK8GenJetE", &AK8GenJetE);
 flatTree->Branch("nGenParticles", &nGenParticles, "nGenParticles/I");
 flatTree->Branch("genParticlePt", &genParticlePt);
 flatTree->Branch("genParticleEta", &genParticleEta);
@@ -348,6 +374,48 @@ evt->SetBranchAddress( "AK4PUPPIJetE_noPU", &myAK4PUPPIJetE_noPU );
 vector<float> *myAK4PUPPIJetRawE_noPU = 0;
 evt->SetBranchAddress( "AK4PUPPIJetRawE_noPU", &myAK4PUPPIJetRawE_noPU );
 
+int mynAK8PUPPIJets_PU = 0;
+evt->SetBranchAddress( "nAK8PUPPIJets_PU", &mynAK8PUPPIJets_PU );
+
+vector<float> *myAK8PUPPIJetPt_PU = 0;
+evt->SetBranchAddress( "AK8PUPPIJetPt_PU", &myAK8PUPPIJetPt_PU );
+
+vector<float> *myAK8PUPPIJetRawPt_PU = 0;
+evt->SetBranchAddress( "AK8PUPPIJetRawPt_PU", &myAK8PUPPIJetRawPt_PU );
+
+vector<float> *myAK8PUPPIJetEta_PU = 0;
+evt->SetBranchAddress( "AK8PUPPIJetEta_PU", &myAK8PUPPIJetEta_PU );
+
+vector<float> *myAK8PUPPIJetPhi_PU = 0;
+evt->SetBranchAddress( "AK8PUPPIJetPhi_PU", &myAK8PUPPIJetPhi_PU );
+
+vector<float> *myAK8PUPPIJetE_PU = 0;
+evt->SetBranchAddress( "AK8PUPPIJetE_PU", &myAK8PUPPIJetE_PU );
+
+vector<float> *myAK8PUPPIJetRawE_PU = 0;
+evt->SetBranchAddress( "AK8PUPPIJetRawE_PU", &myAK8PUPPIJetRawE_PU );
+
+int mynAK8PUPPIJets_noPU = 0;
+evt->SetBranchAddress( "nAK8PUPPIJets_noPU", &mynAK8PUPPIJets_noPU );
+
+vector<float> *myAK8PUPPIJetPt_noPU = 0;
+evt->SetBranchAddress( "AK8PUPPIJetPt_noPU", &myAK8PUPPIJetPt_noPU );
+
+vector<float> *myAK8PUPPIJetRawPt_noPU = 0;
+evt->SetBranchAddress( "AK8PUPPIJetRawPt_noPU", &myAK8PUPPIJetRawPt_noPU );
+
+vector<float> *myAK8PUPPIJetEta_noPU = 0;
+evt->SetBranchAddress( "AK8PUPPIJetEta_noPU", &myAK8PUPPIJetEta_noPU );
+
+vector<float> *myAK8PUPPIJetPhi_noPU = 0;
+evt->SetBranchAddress( "AK8PUPPIJetPhi_noPU", &myAK8PUPPIJetPhi_noPU );
+
+vector<float> *myAK8PUPPIJetE_noPU = 0;
+evt->SetBranchAddress( "AK8PUPPIJetE_noPU", &myAK8PUPPIJetE_noPU );
+
+vector<float> *myAK8PUPPIJetRawE_noPU = 0;
+evt->SetBranchAddress( "AK8PUPPIJetRawE_noPU", &myAK8PUPPIJetRawE_noPU );
+
 int mynAK4CHSJets_PU = 0;
 evt->SetBranchAddress( "nAK4CHSJets_PU", &mynAK4CHSJets_PU );
 
@@ -404,6 +472,21 @@ evt->SetBranchAddress( "AK4GenJetPhi_PU", &myAK4GenJetPhi_PU );
 
 vector<float> *myAK4GenJetE_PU = 0;
 evt->SetBranchAddress( "AK4GenJetE_PU", &myAK4GenJetE_PU );
+
+int mynAK8GenJets_PU = 0;
+evt->SetBranchAddress( "nAK8GenJets_PU", &mynAK8GenJets_PU );
+
+vector<float> *myAK8GenJetPt_PU = 0;
+evt->SetBranchAddress( "AK8GenJetPt_PU", &myAK8GenJetPt_PU );
+
+vector<float> *myAK8GenJetEta_PU = 0;
+evt->SetBranchAddress( "AK8GenJetEta_PU", &myAK8GenJetEta_PU );
+
+vector<float> *myAK8GenJetPhi_PU = 0;
+evt->SetBranchAddress( "AK8GenJetPhi_PU", &myAK8GenJetPhi_PU );
+
+vector<float> *myAK8GenJetE_PU = 0;
+evt->SetBranchAddress( "AK8GenJetE_PU", &myAK8GenJetE_PU );
 
 int mynGenParticles_noPU = 0;
 evt->SetBranchAddress( "nGenParticles_noPU", &mynGenParticles_noPU );
@@ -528,9 +611,12 @@ Long64_t nevents = evt->GetEntries();
     nPFCands_noPU = mynPFCands_noPU;
     nAK4PUPPIJets = mynAK4PUPPIJets_PU;
     nAK4PUPPIJets_noPU = mynAK4PUPPIJets_noPU;
+    nAK8PUPPIJets = mynAK8PUPPIJets_PU;
+    nAK8PUPPIJets_noPU = mynAK8PUPPIJets_noPU;
     nAK4CHSJets = mynAK4CHSJets_PU;
     nAK4CHSJets_noPU = mynAK4CHSJets_noPU;
     nAK4GenJets = mynAK4GenJets_PU;
+    nAK8GenJets = mynAK8GenJets_PU;
     nGenParticles = mynGenParticles_noPU;
     CHSMET = myCHSMET_PU;
     CHSUnclMET = myCHSUnclMET_PU;
@@ -678,6 +764,26 @@ Long64_t nevents = evt->GetEntries();
 	AK4PUPPIJetRawE_noPU.push_back(myAK4PUPPIJetRawE_noPU->at(AK4PUPPIJet_noPU));
     }
 
+    for (int AK8PUPPIJet = 0; AK8PUPPIJet  < mynAK8PUPPIJets_PU; AK8PUPPIJet++) {
+        
+        AK8PUPPIJetPt.push_back(myAK8PUPPIJetPt_PU->at(AK8PUPPIJet));
+	AK8PUPPIJetRawPt.push_back(myAK8PUPPIJetRawPt_PU->at(AK8PUPPIJet));
+        AK8PUPPIJetEta.push_back(myAK8PUPPIJetEta_PU->at(AK8PUPPIJet));
+        AK8PUPPIJetPhi.push_back(myAK8PUPPIJetPhi_PU->at(AK8PUPPIJet));
+        AK8PUPPIJetE.push_back(myAK8PUPPIJetE_PU->at(AK8PUPPIJet));
+	AK8PUPPIJetRawE.push_back(myAK8PUPPIJetRawE_PU->at(AK8PUPPIJet));
+    }
+
+    for (int AK8PUPPIJet_noPU = 0; AK8PUPPIJet_noPU  < mynAK8PUPPIJets_noPU; AK8PUPPIJet_noPU++) {
+        
+        AK8PUPPIJetPt_noPU.push_back(myAK8PUPPIJetPt_noPU->at(AK8PUPPIJet_noPU));
+	AK8PUPPIJetRawPt_noPU.push_back(myAK8PUPPIJetRawPt_noPU->at(AK8PUPPIJet_noPU));
+        AK8PUPPIJetEta_noPU.push_back(myAK8PUPPIJetEta_noPU->at(AK8PUPPIJet_noPU));
+        AK8PUPPIJetPhi_noPU.push_back(myAK8PUPPIJetPhi_noPU->at(AK8PUPPIJet_noPU));
+        AK8PUPPIJetE_noPU.push_back(myAK8PUPPIJetE_noPU->at(AK8PUPPIJet_noPU));
+	AK8PUPPIJetRawE_noPU.push_back(myAK8PUPPIJetRawE_noPU->at(AK8PUPPIJet_noPU));
+    }
+    
     for (int AK4CHSJet = 0; AK4CHSJet  < mynAK4CHSJets_PU; AK4CHSJet++) {
 
       AK4CHSJetPt.push_back(myAK4CHSJetPt_PU->at(AK4CHSJet));
@@ -704,6 +810,15 @@ Long64_t nevents = evt->GetEntries();
       AK4GenJetEta.push_back(myAK4GenJetEta_PU->at(AK4GenJet));
       AK4GenJetPhi.push_back(myAK4GenJetPhi_PU->at(AK4GenJet));
       AK4GenJetE.push_back(myAK4GenJetE_PU->at(AK4GenJet));
+  
+    }
+
+    for (int AK8GenJet = 0; AK8GenJet  < mynAK8GenJets_PU; AK8GenJet++) {
+
+      AK8GenJetPt.push_back(myAK8GenJetPt_PU->at(AK8GenJet));
+      AK8GenJetEta.push_back(myAK8GenJetEta_PU->at(AK8GenJet));
+      AK8GenJetPhi.push_back(myAK8GenJetPhi_PU->at(AK8GenJet));
+      AK8GenJetE.push_back(myAK8GenJetE_PU->at(AK8GenJet));
   
     }
 
@@ -792,6 +907,18 @@ Long64_t nevents = evt->GetEntries();
     AK4PUPPIJetPhi_noPU.clear();
     AK4PUPPIJetE_noPU.clear();
     AK4PUPPIJetRawE_noPU.clear();
+    AK8PUPPIJetPt.clear();
+    AK8PUPPIJetRawPt.clear();
+    AK8PUPPIJetEta.clear();
+    AK8PUPPIJetPhi.clear();
+    AK8PUPPIJetE.clear();
+    AK8PUPPIJetRawE.clear();
+    AK8PUPPIJetPt_noPU.clear();
+    AK8PUPPIJetRawPt_noPU.clear();
+    AK8PUPPIJetEta_noPU.clear();
+    AK8PUPPIJetPhi_noPU.clear();
+    AK8PUPPIJetE_noPU.clear();
+    AK8PUPPIJetRawE_noPU.clear();
     AK4CHSJetPt.clear();
     AK4CHSJetRawPt.clear();
     AK4CHSJetEta.clear();
@@ -808,6 +935,10 @@ Long64_t nevents = evt->GetEntries();
     AK4GenJetEta.clear();
     AK4GenJetPhi.clear();
     AK4GenJetE.clear();
+    AK8GenJetPt.clear();
+    AK8GenJetEta.clear();
+    AK8GenJetPhi.clear();
+    AK8GenJetE.clear();
     triggerBit.clear();
     AK4CHSJetIsBtag.clear();
     genParticlePt.clear();

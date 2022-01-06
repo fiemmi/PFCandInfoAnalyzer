@@ -24,7 +24,7 @@ gBenchmark->Start("running time");
  //AK4 jets
  vector <float> AK4PUPPIJetPt_PU, AK4PUPPIJetRawPt_PU, AK4PUPPIJetEta_PU, AK4PUPPIJetPhi_PU, AK4PUPPIJetE_PU, AK4PUPPIJetRawE_PU, AK4PUPPIJetPt_noPU, AK4PUPPIJetRawPt_noPU, AK4PUPPIJetEta_noPU, AK4PUPPIJetPhi_noPU, AK4PUPPIJetE_noPU, AK4PUPPIJetRawE_noPU, AK4CHSJetPt_PU, AK4CHSJetRawPt_PU, AK4CHSJetEta_PU, AK4CHSJetPhi_PU, AK4CHSJetE_PU, AK4CHSJetRawE_PU, AK4CHSJetPt_noPU, AK4CHSJetRawPt_noPU, AK4CHSJetEta_noPU, AK4CHSJetPhi_noPU, AK4CHSJetE_noPU, AK4CHSJetRawE_noPU, AK4GenJetPt_PU, AK4GenJetEta_PU, AK4GenJetPhi_PU, AK4GenJetE_PU;
  //AK8 jets
- vector <float> AK8PUPPIJetPt_PU, AK8PUPPIJetRawPt_PU, AK8PUPPIJetEta_PU, AK8PUPPIJetPhi_PU, AK8PUPPIJetE_PU, AK8PUPPIJetRawE_PU, AK8PUPPIJetPt_noPU, AK8PUPPIJetRawPt_noPU, AK8PUPPIJetEta_noPU, AK8PUPPIJetPhi_noPU, AK8PUPPIJetE_noPU, AK8PUPPIJetRawE_noPU, AK8GenJetPt_PU, AK8GenJetEta_PU, AK8GenJetPhi_PU, AK8GenJetE_PU;
+ vector <float> AK8PUPPIJetPt_PU, AK8PUPPIJetRawPt_PU, AK8PUPPIJetEta_PU, AK8PUPPIJetPhi_PU, AK8PUPPIJetE_PU, AK8PUPPIJetRawE_PU, AK8PUPPIJetPt_noPU, AK8PUPPIJetRawPt_noPU, AK8PUPPIJetEta_noPU, AK8PUPPIJetPhi_noPU, AK8PUPPIJetE_noPU, AK8PUPPIJetRawE_noPU, AK8PUPPIJetSDMass_PU, AK8PUPPIJetSDMass_noPU, AK8GenJetPt_PU, AK8GenJetEta_PU, AK8GenJetPhi_PU, AK8GenJetE_PU;
  //Gen particles
  vector <float> genParticlePt_noPU, genParticleEta_noPU, genParticlePhi_noPU, genParticleE_noPU, genParticleCharge_noPU, genParticlepdgId_noPU;
  vector <bool> triggerBit_PU, AK4CHSJetIsBtag_PU;
@@ -107,6 +107,7 @@ gBenchmark->Start("running time");
  flatTree->Branch("AK8PUPPIJetPhi_PU", &AK8PUPPIJetPhi_PU);
  flatTree->Branch("AK8PUPPIJetE_PU", &AK8PUPPIJetE_PU);
  flatTree->Branch("AK8PUPPIJetRawE_PU", &AK8PUPPIJetRawE_PU);
+ flatTree->Branch("AK8PUPPIJetSDMass_PU", &AK8PUPPIJetSDMass_PU);
  flatTree->Branch("nAK8PUPPIJets_noPU", &nAK8PUPPIJets_noPU);
  flatTree->Branch("AK8PUPPIJetPt_noPU", &AK8PUPPIJetPt_noPU);
  flatTree->Branch("AK8PUPPIJetRawPt_noPU", &AK8PUPPIJetRawPt_noPU);
@@ -114,6 +115,7 @@ gBenchmark->Start("running time");
  flatTree->Branch("AK8PUPPIJetPhi_noPU", &AK8PUPPIJetPhi_noPU);
  flatTree->Branch("AK8PUPPIJetE_noPU", &AK8PUPPIJetE_noPU);
  flatTree->Branch("AK8PUPPIJetRawE_noPU", &AK8PUPPIJetRawE_noPU);
+ flatTree->Branch("AK8PUPPIJetSDMass_noPU", &AK8PUPPIJetSDMass_noPU);
  flatTree->Branch("nAK4CHSJets_PU", &nAK4CHSJets_PU);
  flatTree->Branch("AK4CHSJetPt_PU", &AK4CHSJetPt_PU);
  flatTree->Branch("AK4CHSJetRawPt_PU", &AK4CHSJetRawPt_PU);
@@ -294,6 +296,9 @@ gBenchmark->Start("running time");
 
  vector<float> *myAK8PUPPIJetRawE_noPU = 0;
  evt_noPU->SetBranchAddress( "AK8PUPPIJetRawE", &myAK8PUPPIJetRawE_noPU );
+
+ vector<float> *myAK8PUPPIJetSDMass_noPU = 0;
+ evt_noPU->SetBranchAddress( "AK8PUPPIJetSDMass", &myAK8PUPPIJetSDMass_noPU );
 
  UInt_t mynAK4CHSJets_noPU = 0;
  evt_noPU->SetBranchAddress( "nAK4CHSJets", &mynAK4CHSJets_noPU );
@@ -515,6 +520,9 @@ gBenchmark->Start("running time");
 
  vector<float> *myAK8PUPPIJetRawE_PU = 0;
  evt_PU->SetBranchAddress( "AK8PUPPIJetRawE", &myAK8PUPPIJetRawE_PU );
+
+ vector<float> *myAK8PUPPIJetSDMass_PU = 0;
+ evt_noPU->SetBranchAddress( "AK8PUPPIJetSDMass", &myAK8PUPPIJetSDMass_PU );
 
  UInt_t mynAK4CHSJets_PU = 0;
  evt_PU->SetBranchAddress( "nAK4CHSJets", &mynAK4CHSJets_PU );
@@ -766,6 +774,7 @@ gBenchmark->Start("running time");
                     AK8PUPPIJetPhi_PU.push_back(myAK8PUPPIJetPhi_PU->at(i));
                     AK8PUPPIJetE_PU.push_back(myAK8PUPPIJetE_PU->at(i));
 		    AK8PUPPIJetRawE_PU.push_back(myAK8PUPPIJetRawE_PU->at(i));
+		    AK8PUPPIJetSDMass_PU.push_back(myAK8PUPPIJetSDMass_PU->at(i));
                     
                 }
 
@@ -777,7 +786,8 @@ gBenchmark->Start("running time");
                     AK8PUPPIJetPhi_noPU.push_back(myAK8PUPPIJetPhi_noPU->at(i));
                     AK8PUPPIJetE_noPU.push_back(myAK8PUPPIJetE_noPU->at(i));
 		    AK8PUPPIJetRawE_noPU.push_back(myAK8PUPPIJetRawE_noPU->at(i));
-                    
+		    AK8PUPPIJetSDMass_noPU.push_back(myAK8PUPPIJetSDMass_noPU->at(i));
+
                 }
 
 		for (unsigned int i = 0; i < mynAK4CHSJets_PU; i++) {
@@ -886,12 +896,14 @@ gBenchmark->Start("running time");
             AK8PUPPIJetPhi_PU.clear();
             AK8PUPPIJetE_PU.clear();
 	    AK8PUPPIJetRawE_PU.clear();
+	    AK8PUPPIJetSDMass_PU.clear();
 	    AK8PUPPIJetPt_noPU.clear();
 	    AK8PUPPIJetRawPt_noPU.clear();
             AK8PUPPIJetEta_noPU.clear();
             AK8PUPPIJetPhi_noPU.clear();
             AK8PUPPIJetE_noPU.clear();
 	    AK8PUPPIJetRawE_noPU.clear();
+	    AK8PUPPIJetSDMass_noPU.clear();
 	    AK4CHSJetPt_PU.clear();
 	    AK4CHSJetRawPt_PU.clear();
             AK4CHSJetEta_PU.clear();

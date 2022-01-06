@@ -22,7 +22,7 @@ gBenchmark->Start("running time");
  //AK4 jets
  vector <float> AK4PUPPIJetPt, AK4PUPPIJetRawPt, AK4PUPPIJetEta, AK4PUPPIJetPhi, AK4PUPPIJetE, AK4PUPPIJetRawE, AK4PUPPIJetPt_noPU, AK4PUPPIJetRawPt_noPU, AK4PUPPIJetEta_noPU, AK4PUPPIJetPhi_noPU, AK4PUPPIJetE_noPU, AK4PUPPIJetRawE_noPU, AK4CHSJetPt, AK4CHSJetRawPt, AK4CHSJetEta, AK4CHSJetPhi, AK4CHSJetE, AK4CHSJetRawE, AK4CHSJetPt_noPU, AK4CHSJetRawPt_noPU, AK4CHSJetEta_noPU, AK4CHSJetPhi_noPU, AK4CHSJetE_noPU, AK4CHSJetRawE_noPU, AK4GenJetPt, AK4GenJetEta, AK4GenJetPhi, AK4GenJetE;
  //AK8 jets
- vector <float> AK8PUPPIJetPt, AK8PUPPIJetRawPt, AK8PUPPIJetEta, AK8PUPPIJetPhi, AK8PUPPIJetE, AK8PUPPIJetRawE, AK8PUPPIJetPt_noPU, AK8PUPPIJetRawPt_noPU, AK8PUPPIJetEta_noPU, AK8PUPPIJetPhi_noPU, AK8PUPPIJetE_noPU, AK8PUPPIJetRawE_noPU, AK8GenJetPt, AK8GenJetEta, AK8GenJetPhi, AK8GenJetE;
+ vector <float> AK8PUPPIJetPt, AK8PUPPIJetRawPt, AK8PUPPIJetEta, AK8PUPPIJetPhi, AK8PUPPIJetE, AK8PUPPIJetRawE, AK8PUPPIJetPt_noPU, AK8PUPPIJetRawPt_noPU, AK8PUPPIJetEta_noPU, AK8PUPPIJetPhi_noPU, AK8PUPPIJetE_noPU, AK8PUPPIJetRawE_noPU, AK8PUPPIJetSDMass, AK8PUPPIJetSDMass_noPU, AK8GenJetPt, AK8GenJetEta, AK8GenJetPhi, AK8GenJetE;
  //Gen particles
  vector <float> genParticlePt, genParticleEta, genParticlePhi, genParticleE, genParticleCharge, genParticlepdgId;
  vector<bool> triggerBit, AK4CHSJetIsBtag;
@@ -112,6 +112,7 @@ flatTree->Branch("AK8PUPPIJetEta", &AK8PUPPIJetEta);
 flatTree->Branch("AK8PUPPIJetPhi", &AK8PUPPIJetPhi);
 flatTree->Branch("AK8PUPPIJetE", &AK8PUPPIJetE);
 flatTree->Branch("AK8PUPPIJetRawE", &AK8PUPPIJetRawE);
+flatTree->Branch("AK8PUPPIJetSDMass", &AK8PUPPIJetSDMass);
 flatTree->Branch("nAK8PUPPIJets_noPU", &nAK8PUPPIJets_noPU);
 flatTree->Branch("AK8PUPPIJetPt_noPU", &AK8PUPPIJetPt_noPU);
 flatTree->Branch("AK8PUPPIJetRawPt_noPU", &AK8PUPPIJetRawPt_noPU);
@@ -119,6 +120,7 @@ flatTree->Branch("AK8PUPPIJetEta_noPU", &AK8PUPPIJetEta_noPU);
 flatTree->Branch("AK8PUPPIJetPhi_noPU", &AK8PUPPIJetPhi_noPU);
 flatTree->Branch("AK8PUPPIJetE_noPU", &AK8PUPPIJetE_noPU);
 flatTree->Branch("AK8PUPPIJetRawE_noPU", &AK8PUPPIJetRawE_noPU);
+flatTree->Branch("AK8PUPPIJetSDMass_noPU", &AK8PUPPIJetSDMass_noPU);
 flatTree->Branch("nAK4CHSJets", &nAK4CHSJets);
 flatTree->Branch("AK4CHSJetPt", &AK4CHSJetPt);
 flatTree->Branch("AK4CHSJetRawPt", &AK4CHSJetRawPt);
@@ -395,6 +397,9 @@ evt->SetBranchAddress( "AK8PUPPIJetE_PU", &myAK8PUPPIJetE_PU );
 vector<float> *myAK8PUPPIJetRawE_PU = 0;
 evt->SetBranchAddress( "AK8PUPPIJetRawE_PU", &myAK8PUPPIJetRawE_PU );
 
+vector<float> *myAK8PUPPIJetSDMass_PU = 0;
+evt->SetBranchAddress( "AK8PUPPIJetSDMass_PU", &myAK8PUPPIJetSDMass_PU );
+
 int mynAK8PUPPIJets_noPU = 0;
 evt->SetBranchAddress( "nAK8PUPPIJets_noPU", &mynAK8PUPPIJets_noPU );
 
@@ -415,6 +420,9 @@ evt->SetBranchAddress( "AK8PUPPIJetE_noPU", &myAK8PUPPIJetE_noPU );
 
 vector<float> *myAK8PUPPIJetRawE_noPU = 0;
 evt->SetBranchAddress( "AK8PUPPIJetRawE_noPU", &myAK8PUPPIJetRawE_noPU );
+
+vector<float> *myAK8PUPPIJetSDMass_noPU = 0;
+evt->SetBranchAddress( "AK8PUPPIJetSDMass_noPU", &myAK8PUPPIJetSDMass_noPU );
 
 int mynAK4CHSJets_PU = 0;
 evt->SetBranchAddress( "nAK4CHSJets_PU", &mynAK4CHSJets_PU );
@@ -772,6 +780,8 @@ Long64_t nevents = evt->GetEntries();
         AK8PUPPIJetPhi.push_back(myAK8PUPPIJetPhi_PU->at(AK8PUPPIJet));
         AK8PUPPIJetE.push_back(myAK8PUPPIJetE_PU->at(AK8PUPPIJet));
 	AK8PUPPIJetRawE.push_back(myAK8PUPPIJetRawE_PU->at(AK8PUPPIJet));
+	AK8PUPPIJetSDMass.push_back(myAK8PUPPIJetSDMass_PU->at(AK8PUPPIJet));
+
     }
 
     for (int AK8PUPPIJet_noPU = 0; AK8PUPPIJet_noPU  < mynAK8PUPPIJets_noPU; AK8PUPPIJet_noPU++) {
@@ -782,6 +792,8 @@ Long64_t nevents = evt->GetEntries();
         AK8PUPPIJetPhi_noPU.push_back(myAK8PUPPIJetPhi_noPU->at(AK8PUPPIJet_noPU));
         AK8PUPPIJetE_noPU.push_back(myAK8PUPPIJetE_noPU->at(AK8PUPPIJet_noPU));
 	AK8PUPPIJetRawE_noPU.push_back(myAK8PUPPIJetRawE_noPU->at(AK8PUPPIJet_noPU));
+	AK8PUPPIJetSDMass_noPU.push_back(myAK8PUPPIJetSDMass_noPU->at(AK8PUPPIJet_noPU));
+
     }
     
     for (int AK4CHSJet = 0; AK4CHSJet  < mynAK4CHSJets_PU; AK4CHSJet++) {
@@ -913,12 +925,14 @@ Long64_t nevents = evt->GetEntries();
     AK8PUPPIJetPhi.clear();
     AK8PUPPIJetE.clear();
     AK8PUPPIJetRawE.clear();
+    AK8PUPPIJetSDMass.clear();
     AK8PUPPIJetPt_noPU.clear();
     AK8PUPPIJetRawPt_noPU.clear();
     AK8PUPPIJetEta_noPU.clear();
     AK8PUPPIJetPhi_noPU.clear();
     AK8PUPPIJetE_noPU.clear();
     AK8PUPPIJetRawE_noPU.clear();
+    AK8PUPPIJetSDMass_noPU.clear();
     AK4CHSJetPt.clear();
     AK4CHSJetRawPt.clear();
     AK4CHSJetEta.clear();

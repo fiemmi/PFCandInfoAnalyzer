@@ -479,10 +479,8 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   //loop on PF candidates to store their Pt, Eta, Phi, E, pdgId, charge, PUPPI weight
   for (int i = 0; i < nPFCand; i++) {
     
-    float alpha = 0.0;
-
     //compute PUPPIalpha
-    alpha = 0.0;
+    float alpha = 1.0;
     
     if(std::abs(PFCands->at(i).eta()) < 2.5) {//PF candidate is inside the tracking volume
 
@@ -535,7 +533,6 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       }//end inner loop on PF cands
     
     }//end abs(PFCandEta) > 2.5   
-    
 
     PFCandPt.push_back(PFCands->at(i).pt());
     PFCandPx.push_back(PFCands->at(i).px());

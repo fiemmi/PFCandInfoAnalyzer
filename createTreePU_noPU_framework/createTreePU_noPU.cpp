@@ -13,14 +13,14 @@ void createTreePU_noPU (int nfile) {
 
 gBenchmark->Start("running time");    
     
- TFile *inputfile_noPU  = new TFile(Form("/afs/cern.ch/work/f/fiemmi/private/CMSSW_10_6_20/src/PFCandInfo/PFCandInfoAnalyzer/sliced_noPUfiles/files/EXT80k_miniAODv1_fixCHSbug/flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_EpsilonPU_EXT80k_withPUPPIalpha_miniAODv1_fixCHSbug_part%i.root", nfile), "READ" );
+ TFile *inputfile_noPU  = new TFile(Form("/eos/user/f/fiemmi/JetMET/storage/sorted_files/EpsilonPU_RunIISummer20UL17_MiniAODv2_EXT350k/flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_EpsilonPU_RunIISummer20UL17_MiniAODv2_EXT350k_%i.root", nfile), "READ" );
 
- TFile *inputfile_PU  = new TFile(Form("/afs/cern.ch/work/f/fiemmi/private/CMSSW_10_6_20/src/PFCandInfo/PFCandInfoAnalyzer/sorting_framework/sorted_files/EXT80k_miniAODv1_fixCHSbug/flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_PU_EXT80k_withPUPPIalpha_miniAODv1_fixCHSbug_%i.root", nfile), "READ" );
+ TFile *inputfile_PU  = new TFile(Form("/eos/user/f/fiemmi/JetMET/storage/PU_sliced_files/FlatPU0to75_RunIISummer20UL17_MiniAODv2_EXT350k/flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_FlatPU0to75_RunIISummer20UL17_MiniAODv2_EXT350k_part%i.root", nfile), "READ" );
 
  int runNo, evtNo, lumiSec, nPUint_PU, nPFCands_PU, nPFCands_noPU, nAK4PUPPIJets_PU, nAK4PUPPIJets_noPU, nAK8PUPPIJets_PU, nAK8PUPPIJets_noPU, nAK4CHSJets_PU, nAK4CHSJets_noPU, nAK4GenJets_PU /*(same as noPU)*/, nAK8GenJets_PU /*(same as noPU)*/, nGenParticles_noPU /*(same as PU)*/, nLeptons_PU;
  float CHSMET_PU, CHSUnclMET_PU, RawCHSMET_PU, RawCHSUnclMET_PU, PUPPIMET_PU, PUPPIUnclMET_PU, RawPUPPIMET_PU, RawPUPPIUnclMET_PU, CHSMET_noPU, CHSUnclMET_noPU, RawCHSMET_noPU, RawCHSUnclMET_noPU, PUPPIMET_noPU, PUPPIUnclMET_noPU, RawPUPPIMET_noPU, RawPUPPIUnclMET_noPU, genMET, genUnclMET, VBFDijetGenMass, VBFDijetGenMass_PU, VBFDijetGenMass_noPU, VBFDijetCHSMass_PU, VBFDijetCHSMass_noPU, VBFDijetPUPPIMass_PU, VBFDijetPUPPIMass_noPU;
  //PF candidates
- vector <float> PFCandPt_PU, PFCandPt_noPU, PFCandEta_PU, PFCandEta_noPU, PFCandAbsEta_PU, PFCandPhi_PU, PFCandPhi_noPU, PFCandE_PU, PFCandE_noPU, PFCandpdgId_PU, PFCandpdgId_noPU, PFCandCharge_PU, PFCandCharge_noPU, PFCandPUPPIw_PU, PFCandPUPPIw_noPU, PFCandPUPPIalpha_PU, PFCandPUPPIalpha_noPU, PFCandHCalFrac_PU, PFCandHCalFrac_noPU, PFCandHCalFracCalib_PU, PFCandHCalFracCalib_noPU, PFCandVtxAssQual_PU, PFCandVtxAssQual_noPU, PFCandFromPV_PU, PFCandFromPV_noPU, PFCandLostInnerHits_PU, PFCandLostInnerHits_noPU, PFCandTrackHighPurity_PU, PFCandTrackHighPurity_noPU, PFCandDZ_PU, PFCandDZ_noPU, PFCandDXY_PU, PFCandDXY_noPU, PFCandDZsig_PU, PFCandDZsig_noPU, PFCandDXYsig_PU, PFCandDXYsig_noPU, PFCandNormChi2_PU, PFCandNormChi2_noPU, PFCandQuality_PU, PFCandQuality_noPU, PFCandNumHits_PU, PFCandNumHits_noPU, PFCandNumLayersHit_PU, PFCandNumLayersHit_noPU;
+ vector <float> PFCandPt_PU, PFCandPt_noPU, PFCandEta_PU, PFCandEta_noPU, /*PFCandAbsEta_PU,*/ PFCandPhi_PU, PFCandPhi_noPU, PFCandE_PU, PFCandE_noPU, PFCandpdgId_PU, PFCandpdgId_noPU, PFCandCharge_PU, PFCandCharge_noPU, PFCandPUPPIw_PU, PFCandPUPPIw_noPU, PFCandPUPPIalpha_PU, PFCandPUPPIalpha_noPU, PFCandHCalFrac_PU, PFCandHCalFrac_noPU, PFCandHCalFracCalib_PU, PFCandHCalFracCalib_noPU, PFCandVtxAssQual_PU, PFCandVtxAssQual_noPU, PFCandFromPV_PU, PFCandFromPV_noPU, PFCandLostInnerHits_PU, PFCandLostInnerHits_noPU, PFCandTrackHighPurity_PU, PFCandTrackHighPurity_noPU, PFCandDZ_PU, PFCandDZ_noPU, PFCandDXY_PU, PFCandDXY_noPU, PFCandDZsig_PU, PFCandDZsig_noPU, PFCandDXYsig_PU, PFCandDXYsig_noPU, PFCandNormChi2_PU, PFCandNormChi2_noPU, PFCandQuality_PU, PFCandQuality_noPU, PFCandNumHits_PU, PFCandNumHits_noPU, PFCandNumLayersHit_PU, PFCandNumLayersHit_noPU;
  //AK4 jets
  vector <float> AK4PUPPIJetPt_PU, AK4PUPPIJetRawPt_PU, AK4PUPPIJetEta_PU, AK4PUPPIJetPhi_PU, AK4PUPPIJetE_PU, AK4PUPPIJetRawE_PU, AK4PUPPIJetPt_noPU, AK4PUPPIJetRawPt_noPU, AK4PUPPIJetEta_noPU, AK4PUPPIJetPhi_noPU, AK4PUPPIJetE_noPU, AK4PUPPIJetRawE_noPU, AK4CHSJetPt_PU, AK4CHSJetRawPt_PU, AK4CHSJetEta_PU, AK4CHSJetPhi_PU, AK4CHSJetE_PU, AK4CHSJetRawE_PU, AK4CHSJetPt_noPU, AK4CHSJetRawPt_noPU, AK4CHSJetEta_noPU, AK4CHSJetPhi_noPU, AK4CHSJetE_noPU, AK4CHSJetRawE_noPU, AK4GenJetPt_PU, AK4GenJetEta_PU, AK4GenJetPhi_PU, AK4GenJetE_PU;
  //AK8 jets
@@ -29,7 +29,7 @@ gBenchmark->Start("running time");
  vector <float> genParticlePt_noPU, genParticleEta_noPU, genParticlePhi_noPU, genParticleE_noPU, genParticleCharge_noPU, genParticlepdgId_noPU;
  vector <bool> triggerBit_PU, AK4CHSJetIsBtag_PU;
  
- TFile * outputfile  = new TFile( Form("flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_PU+EpsilonPU_EXT80k_withPUPPIalpha_miniAODv1_fixCHSbug_%i.root", nfile), "RECREATE" );
+ TFile * outputfile  = new TFile( Form("flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_PU+EpsilonPU_FlatPU0to75_RunIISummer20UL17_MiniAODv2_EXT350k_%i.root", nfile), "RECREATE" );
  TTree * flatTree = new TTree( "events", "events" );
  flatTree->Branch("runNo", &runNo, "runNo/I");
  flatTree->Branch("evtNo", &evtNo, "evtNo/I");
@@ -45,7 +45,7 @@ gBenchmark->Start("running time");
  flatTree->Branch("PFCandEta_PU", &PFCandEta_PU);
  flatTree->Branch("PFCandEta_noPU", &PFCandEta_noPU);
  flatTree->Branch("PFCandEta_PU", &PFCandEta_PU);
- flatTree->Branch("PFCandAbsEta_PU", &PFCandAbsEta_PU);
+ //flatTree->Branch("PFCandAbsEta_PU", &PFCandAbsEta_PU);
  flatTree->Branch("PFCandPhi_noPU", &PFCandPhi_noPU);
  flatTree->Branch("PFCandPhi_PU", &PFCandPhi_PU);
  flatTree->Branch("PFCandE_noPU", &PFCandE_noPU);
@@ -376,7 +376,7 @@ gBenchmark->Start("running time");
  evt_noPU->SetBranchAddress( "VBFDijetGenMass", &myVBFDijetGenMass );
 
  float myVBFDijetGenMass_noPU = 0; //take VBFDijetGenMass from noPU sample
- evt_noPU->SetBranchAddress( "VBFDijetGenMass_noPU", &myVBFDijetGenMass_noPU );
+ evt_noPU->SetBranchAddress( "VBFDijetGenMass", &myVBFDijetGenMass_noPU );
 
  float myVBFDijetPUPPIMass_noPU = 0;
  evt_noPU->SetBranchAddress( "VBFDijetPUPPIMass", &myVBFDijetPUPPIMass_noPU );
@@ -415,10 +415,10 @@ gBenchmark->Start("running time");
 
  vector<float> *myPFCandEta_PU = 0;
  evt_PU->SetBranchAddress( "PFCandEta", &myPFCandEta_PU );
-
+ /*
  vector<float> *myPFCandAbsEta_PU = 0;
  evt_PU->SetBranchAddress( "PFCandAbsEta", &myPFCandAbsEta_PU );
-
+ */
  vector<float> *myPFCandPhi_PU = 0;
  evt_PU->SetBranchAddress( "PFCandPhi", &myPFCandPhi_PU );
 
@@ -522,7 +522,7 @@ gBenchmark->Start("running time");
  evt_PU->SetBranchAddress( "AK8PUPPIJetRawE", &myAK8PUPPIJetRawE_PU );
 
  vector<float> *myAK8PUPPIJetSDMass_PU = 0;
- evt_noPU->SetBranchAddress( "AK8PUPPIJetSDMass", &myAK8PUPPIJetSDMass_PU );
+ evt_PU->SetBranchAddress( "AK8PUPPIJetSDMass", &myAK8PUPPIJetSDMass_PU );
 
  UInt_t mynAK4CHSJets_PU = 0;
  evt_PU->SetBranchAddress( "nAK4CHSJets", &mynAK4CHSJets_PU );
@@ -709,7 +709,7 @@ gBenchmark->Start("running time");
                     
                     PFCandPt_PU.push_back(myPFCandPt_PU->at(i));
                     PFCandEta_PU.push_back(myPFCandEta_PU->at(i));
-                    PFCandAbsEta_PU.push_back(myPFCandAbsEta_PU->at(i));
+                    //PFCandAbsEta_PU.push_back(myPFCandAbsEta_PU->at(i));
                     PFCandPhi_PU.push_back(myPFCandPhi_PU->at(i));
                     PFCandE_PU.push_back(myPFCandE_PU->at(i));
                     PFCandpdgId_PU.push_back(myPFCandpdgId_PU->at(i));
@@ -839,7 +839,7 @@ gBenchmark->Start("running time");
             PFCandE_noPU.clear();
             PFCandPt_PU.clear();
             PFCandEta_PU.clear();
-            PFCandAbsEta_PU.clear();
+            //PFCandAbsEta_PU.clear();
             PFCandPhi_PU.clear();
             PFCandE_PU.clear();
             PFCandpdgId_PU.clear();

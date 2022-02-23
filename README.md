@@ -45,16 +45,17 @@ condor_submit submit.sub
 hadd some_name_for_outputfile.root condorJob_*
 ```
 6. **Save runNo, lumiSec, evtNo of PU events**. Repeat instructions in step 2 to save the run number, lumi section and event number of each PU event to a .txt file.
-7. **Set up the sorting of TTrees**. You have now two lists of run number, lumi section and event number in the form of two `.txt` files. Feed them to the `get_index.py` script to find the correspondance between events in no-PU and PU file. The script will produce a third list containing, for each event in the no-PU file, the index pointing at that event in the PU file. The script will also split this final list in *n* sublists, where *n* can be decided by the user, and save them.
-8. **Sort PU events**. This is done by running condor jobs for `sorting_framework/sortTrees.cpp`. This macro takes a sublist produced in step 7 as input and uses the indices to sort the PU events in the same order of the no-PU events:
+7. **Set up the sorting of TTrees**. You have now two lists of run number, lumi section and event number in the form of two `.txt` files. Feed them to the `sorting_framework/get_indices.py` script to find the correspondance between events in PU and no-PU files. Mind that there are many reasons why CRAB could fail in extracting all the no-PU events that you want from the PU file. Thus, you should feed the script **first** with the list of PU events and **then** with the list of no-PU events. If a PU event is not find in the no-PU set, it is simply skipped. This way you will get the PU--->noPU correspondance with no unmatched events. The script will produce a third list containing, for each event in the PU file, the index pointing at that event no-in the PU file. The script will also split this final list in *n* sublists, where *n* can be decided by the user, and save them.
+8. **Sort no-PU events**. This is done by running condor jobs for `sorting_framework/sortTrees.cpp`. This macro takes a sublist produced in step 7 as input and uses the indices to sort the no-PU events in the same order of the PU events:
 ```
 cd condor/sortTrees
 condor_submit submit.sub
 ```
-9. **Split the no-PU file in subfiles**. Each of the PU files is now sorted, but the no-PU file is still a single, big file. Split it to *n* subfiles, where *n* ccomes from step 7, using `flatTree_slicer.cpp`:
+9. **Split the PU file in subfiles**. Take the file you got in step 5 and split it into the same number of files *n* that you got in step 7. For this you can use `flatTree_slicer.cpp` (or its faster version `flatTree_slicer_new.cpp`):
 ```
 cd sliced_noPUfiles
-root -l -q flatTree_slicer.cpp+(n)
+root -l -q flatTree_slicer.cpp+(n_evts_max, n_evts_per_file)
+// or root -l -q flatTree_slicer_new.cpp+(n_evts_max, n_evts_per_file)
 ```
 10. **Merge information from PU and no-PU events**. Now that you have the same number of PU and no-PU files and events are in the same order, merge the files into a single file by running condor jobs executing `createTreePU_noPU_framework/createTreePU_noPU.cpp`:
 ```

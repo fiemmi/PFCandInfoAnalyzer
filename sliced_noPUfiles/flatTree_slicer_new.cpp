@@ -17,10 +17,11 @@ void flatTree_slicer_new(int n_evts_max, int n_evts_per_file) {
   TTree *newtree[n_output_files];
   
   for (int i = 0; i < n_output_files; i++){
-    newtree[i] = oldtree->CloneTree(0);
+    
     std::string str_file_counter = to_string(i);
     TString Str_file_counter = str_file_counter;
     outputfile[i] = new TFile("/eos/user/f/fiemmi/JetMET/storage/PU_sliced_files/FlatPU0to75_RunIISummer20UL17_MiniAODv2_EXT350k/flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_FlatPU0to75_RunIISummer20UL17_MiniAODv2_EXT350k_part"+Str_file_counter+".root","recreate");
+    newtree[i] = oldtree->CloneTree(0);
     
     if (i > 0) {
 

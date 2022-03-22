@@ -480,7 +480,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   for (int i = 0; i < nPFCand; i++) {
     
     //compute PUPPIalpha
-    float alpha = 1.0;
+    float alpha = 0.0;
     
     if(std::abs(PFCands->at(i).eta()) < 2.5) {//PF candidate is inside the tracking volume
 
@@ -523,7 +523,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 	  deltaR = sqrt( pow(deltaEta, 2) + pow(deltaPhi, 2) );
       
 	  if (deltaR < 0.4) {
-
+	    
 	    alpha += pow(PFCands->at(j).pt()/deltaR ,2);
 	
 	  }
@@ -533,6 +533,9 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       }//end inner loop on PF cands
     
     }//end abs(PFCandEta) > 2.5   
+
+    float log_alpha = log(alpha);
+    if (isinf(log_alpha)) log_alpha = 999.0;
 
     PFCandPt.push_back(PFCands->at(i).pt());
     PFCandPx.push_back(PFCands->at(i).px());
@@ -545,7 +548,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
     PFCandpdgId.push_back(PFCands->at(i).pdgId());
     PFCandCharge.push_back(PFCands->at(i).charge());
     PFCandPUPPIw.push_back(PFCands->at(i).puppiWeight());
-    PFCandPUPPIalpha.push_back(log(alpha));
+    PFCandPUPPIalpha.push_back(log_alpha);
     PFCandNumHits.push_back(PFCands->at(i).numberOfHits());
     PFCandNumPixelHits.push_back(PFCands->at(i).numberOfPixelHits());
     PFCandPixelLayersWithMeasurement.push_back(PFCands->at(i).pixelLayersWithMeasurement());
@@ -580,8 +583,10 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 
     if (PFCands->at(i).bestTrack()) {
     
-      PFCandDZSig.push_back(PFCands->at(i).dz()/PFCands->at(i).dzError());
-      PFCandDXYSig.push_back(PFCands->at(i).dxy()/PFCands->at(i).dxyError());
+      if ( isinf(PFCands->at(i).dz()/PFCands->at(i).dzError()) ) PFCandDZSig.push_back(999.0); //check for possible infinites in the division (should be very very rare)
+      else PFCandDZSig.push_back(PFCands->at(i).dz()/PFCands->at(i).dzError());
+      if ( isinf(PFCands->at(i).dxy()/PFCands->at(i).dxyError()) ) PFCandDXYSig.push_back(999.0); //check for possible infinites in the division (should be very very rare)
+      else PFCandDXYSig.push_back(PFCands->at(i).dxy()/PFCands->at(i).dxyError());
       
       const auto *trk = PFCands->at(i).bestTrack();
       PFCandNormChi2.push_back(trk->normalizedChi2());

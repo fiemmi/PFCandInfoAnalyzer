@@ -608,6 +608,10 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       PFCandDXYSig.push_back(0.0);
       PFCandNormChi2.push_back(999.0);
       PFCandQuality.push_back(0.0);
+      PFCandTrkPt.push_back(0.0);
+      PFCandTrkEta.push_back(0.0);
+      PFCandTrkPhi.push_back(0.0);
+      PFCandTrkChi2.push_back(999.0);
       
     }
 

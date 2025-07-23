@@ -97,7 +97,7 @@ class PFCandInfoAnalyzer : public edm::one::EDAnalyzer<> {
   //std::vector <float> AK4PUPPIJetPt_fromConstituents, AK4PUPPIJetEta_fromConstituents, AK4PUPPIJetPhi_fromConstituents, AK4PUPPIJetE_fromConstituents; 
   //PF candidates
   std::vector <float> PFCandPt,PFCandPx, PFCandPy, PFCandPz, PFCandEta, /*PFCandAbsEta,*/ PFCandPhi, PFCandE, PFCandpdgId, PFCandCharge, PFCandPUPPIw, PFCandPUPPIalpha, PFCandHCalFrac,
-  PFCandHCalFracCalib, PFCandVtxAssQual, PFCandFromPV, PFCandLostInnerHits, PFCandTrackHighPurity, PFCandDZ, PFCandDXY, PFCandDZSig, PFCandDXYSig, PFCandNormChi2, PFCandQuality, PFCandNumHits, PFCandNumPixelHits, PFCandPixelLayersWithMeasurement, PFCandStripLayersWithMeasurement, PFCandTrackerLayersWithMeasurement; 
+    PFCandHCalFracCalib, PFCandVtxAssQual, PFCandFromPV, PFCandLostInnerHits, PFCandTrackHighPurity, PFCandDZ, PFCandDXY, PFCandDZSig, PFCandDXYSig, PFCandNormChi2, PFCandQuality, PFCandNumHits, PFCandNumPixelHits, PFCandPixelLayersWithMeasurement, PFCandStripLayersWithMeasurement, PFCandTrackerLayersWithMeasurement, PFCandTrkPt, PFCandTrkEta, PFCandTrkPhi, PFCandTrkChi2; 
   //AK4 jets
   std::vector <float> AK4PUPPIJetPt, AK4PUPPIJetEta, AK4PUPPIJetPhi, AK4PUPPIJetE, AK4PUPPIJetRawPt, AK4PUPPIJetRawE, AK4CHSJetPt, AK4CHSJetEta, AK4CHSJetPhi, AK4CHSJetE, AK4CHSJetRawPt, AK4CHSJetRawE, AK4GenJetPt, AK4GenJetEta, AK4GenJetPhi, AK4GenJetE;
   std::vector<int> AK4PUPPIJetHadronFlav, AK4CHSJetHadronFlav;
@@ -227,6 +227,10 @@ PFCandInfoAnalyzer::PFCandInfoAnalyzer(const edm::ParameterSet& iConfig) :
   //outTree_->Branch("PFCandPixelLayersWithMeasurement", &PFCandPixelLayersWithMeasurement);
   //outTree_->Branch("PFCandStripLayersWithMeasurement", &PFCandStripLayersWithMeasurement);
   outTree_->Branch("PFCandNumLayersHit", &PFCandTrackerLayersWithMeasurement);
+  outTree_->Branch("PFCandTrkPt", &PFCandTrkPt);
+  outTree_->Branch("PFCandTrkEta", &PFCandTrkEta);
+  outTree_->Branch("PFCandTrkPhi", &PFCandTrkPhi);
+  outTree_->Branch("PFCandTrkChi2", &PFCandTrkChi2);
   outTree_->Branch("nGenParticles", &nGenParticles,"nGenParticles/i");
   outTree_->Branch("genParticlePt", &genParticlePt);
   outTree_->Branch("genParticleEta", &genParticleEta);
@@ -554,7 +558,7 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
     PFCandPixelLayersWithMeasurement.push_back(PFCands->at(i).pixelLayersWithMeasurement());
     PFCandStripLayersWithMeasurement.push_back(PFCands->at(i).stripLayersWithMeasurement());
     PFCandTrackerLayersWithMeasurement.push_back(PFCands->at(i).trackerLayersWithMeasurement());
-   
+          
     //for neutral hadrons or HF hadron, store fraction of energy recorded in the HCAL
     if (PFCands->at(i).pdgId() == 130 || PFCands->at(i).pdgId() == 1) {
       
@@ -591,6 +595,10 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       const auto *trk = PFCands->at(i).bestTrack();
       PFCandNormChi2.push_back(trk->normalizedChi2());
       PFCandQuality.push_back(trk->qualityMask());
+      PFCandTrkPt.push_back(trk->pt());
+      PFCandTrkEta.push_back(trk->eta());
+      PFCandTrkPhi.push_back(trk->phi());
+      PFCandTrkChi2.push_back(trk->chi2());
       
     }
 
@@ -896,6 +904,10 @@ PFCandInfoAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   PFCandPixelLayersWithMeasurement.clear();
   PFCandStripLayersWithMeasurement.clear();
   PFCandTrackerLayersWithMeasurement.clear();
+  PFCandTrkPt.clear();
+  PFCandTrkEta.clear();
+  PFCandTrkPhi.clear();
+  PFCandTrkChi2.clear();
   genParticlePt.clear();
   genParticleEta.clear();
   genParticlePhi.clear();

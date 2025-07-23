@@ -20,13 +20,13 @@ isMC = True
 isminiAODv1 = False
 
 #load globaltag
-process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
+process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 if (isMC) : 
-    process.GlobalTag.globaltag = "106X_mc2017_realistic_v9"
+    process.GlobalTag.globaltag = "150X_mcRun3_2024_realistic_v2"
     print("Using globaltag {0}".format(process.GlobalTag.globaltag))
  
 else :
-    process.GlobalTag.globaltag = "106X_dataRun2_v32"
+    process.GlobalTag.globaltag = "150X_dataRun3_v2"
     print("Using globaltag {0}".format(process.GlobalTag.globaltag))
 
 process.source = cms.Source("PoolSource",
@@ -41,7 +41,7 @@ process.source = cms.Source("PoolSource",
     #fileNames = cms.untracked.vstring('file:root://cmsxrootd.fnal.gov///store/mc/RunIISummer19UL17MiniAODv2/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v1/00000/00379E19-FB20-7044-83F6-7A9E41F1BD1D.root'),
     #NEW Summer20 MiniAODv2 FILES (usage recommended!)
     #EpsiloPU
-    fileNames = cms.untracked.vstring('file:root://cmsxrootd.fnal.gov///store/mc/RunIISummer20UL17MiniAODv2/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/MINIAODSIM/EpsilonPU_106X_mc2017_realistic_v9-v1/2810000/105E9ED9-45A5-1940-9A6C-642A959DA07F.root', 'file:root://cmsxrootd.fnal.gov///store/mc/RunIISummer20UL17MiniAODv2/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/MINIAODSIM/EpsilonPU_106X_mc2017_realistic_v9-v1/2810000/1156CDAA-973F-1D44-999D-A3ED4E080DBC.root', 'file:root://cmsxrootd.fnal.gov///store/mc/RunIISummer20UL17MiniAODv2/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/MINIAODSIM/EpsilonPU_106X_mc2017_realistic_v9-v1/2810000/1299FFE0-F44B-3047-AAAC-F8ADFEAD88B9.root', 'file:root://cmsxrootd.fnal.gov///store/mc/RunIISummer20UL17MiniAODv2/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/MINIAODSIM/EpsilonPU_106X_mc2017_realistic_v9-v1/2810000/17307774-A7C9-EB40-AA15-2AA628C16BFC.root'),
+    fileNames = cms.untracked.vstring('file:root://cmsxrootd.fnal.gov///store/mc/Run3Winter24MiniAOD/QCD_Pt-15to7000_TuneCP5_Flat_13p6TeV_pythia8/MINIAODSIM/NoPU_133X_mcRun3_2024_realistic_v9-v2/2830000/00048369-c79b-4630-8f76-9566cf93778e.root'),
     #with PU
     #fileNames = cms.untracked.vstring('file:root://cmsxrootd.fnal.gov///store/mc/RunIISummer20UL17MiniAODv2/QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8/MINIAODSIM/FlatPU0to75_106X_mc2017_realistic_v9-v1/2810000/00A0E8A6-AE06-1848-9722-A5138253694D.root'),
     #------- TO BE USED WITH CONDOR --------
@@ -133,7 +133,8 @@ process.GetPFInfo = cms.EDAnalyzer('PFCandInfoAnalyzer',
 process.TFileService = cms.Service("TFileService",
                                        #fileName = cms.string('flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_ext.root')
                                        #fileName = cms.string('flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_PU_EXT.root')
-                                       fileName = cms.string('flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_EpsilonPU_RunIISummer20UL17_MiniAODv2_EXT80k.root')
+                                       #fileName = cms.string('flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_EpsilonPU_RunIISummer20UL17_MiniAODv2_EXT80k.root')
+                                       fileName = cms.string('testRun3.root')
                                        #fileName = cms.string('flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_EpsilonPU_EXT80k_withPUPPIalpha_miniAODv1_withAK8.root')
                                        #fileName = cms.string('flatTree_QCD_Pt-15to7000_TuneCP5_Flat2018_13TeV_pythia8_training_PU_EXT80k_.root')
                                        #fileName = cms.string('flatTree_TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8_Summer19_miniAODv2.root')
